@@ -1,15 +1,16 @@
 {
   "name": "hotel-aggregator",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "NestJS backed hotel aggregator application",
+  "author": "serginij <kotlizkiy@gmail.com>",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start",
+    "start": "docker-compose up --build",
+    "start:docker": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
@@ -56,15 +57,24 @@
       "json",
       "ts"
     ],
-    "rootDir": "src",
-    "testRegex": ".*\\.spec\\.ts$",
+    "preset": "ts-jest",
+    "roots": [
+      "<rootDir>/src",
+      "<rootDir>/test"
+    ],
+    "moduleDirectories": [
+      "node_modules",
+      "src"
+    ],
+    "testRegex": ".spec.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
-    "collectCoverageFrom": [
-      "**/*.(t|j)s"
-    ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^src/(.*)$": "<rootDir>/src/$1",
+      "^test/(.*)$": "<rootDir>/test/$1"
+    }
   }
 }

@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  aggragator:
+    build: .
+    ports:
+      - 3000:3000
+    env_file:
+      - .env
+    command: npm run start:docker
+    volumes:
+      - ./public:/public
