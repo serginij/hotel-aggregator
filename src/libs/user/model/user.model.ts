@@ -15,7 +15,7 @@ export class User {
   name: string;
 
   @Column({ default: 'client' })
-  role: string;
+  role: 'client' | 'admin' | 'manager';
 
   @Column({ nullable: true })
   contactPhone: boolean;
