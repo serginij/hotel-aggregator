@@ -7,10 +7,15 @@ import { SearchUserParams, TBaseUserInfo } from '../interface/user.interface';
 import { User } from '../model/user.model';
 import { UserStore } from '../store/user.store';
 
+type ConditionalUserModel<B> = B extends true ? User : TBaseUserInfo;
+
 interface IUserService {
   create(data: Partial<User>): Promise<User>;
   findById(id: string): Promise<TBaseUserInfo | null>;
-  findByEmail(email: string): Promise<TBaseUserInfo | null>;
+  findByEmail<B extends true>(
+    email: string,
+    options?: { fullModel: B },
+  ): Promise<ConditionalUserModel<B> | null>;
   findAll(params: SearchUserParams): Promise<TBaseUserInfo[] | null>;
 }
 
@@ -34,21 +39,6 @@ export class UserService implements IUserService {
     });
   };
 
-  validate = async (email: string, pass: string) => {
-    const user = await this.userStore.findUserByEmail(email);
-
-    if (user) {
-      const { passwordHash, ...result } = user;
-      const isEquals = await this.bcryptService.decryptPassword(
-        pass,
-        passwordHash,
-      );
-
-      if (isEquals) return result;
-    }
-    return null;
-  };
-
   findById = async (id: string) => {
     const user = await this.userStore.findUserById(id);
 
@@ -61,13 +51,18 @@ export class UserService implements IUserService {
     return null;
   };
 
-  findByEmail = async (email: string) => {
+  findByEmail = async <B extends boolean>(
+    email: string,
+    options?: { fullModel: B },
+  ): Promise<ConditionalUserModel<B> | null> => {
     const user = await this.userStore.findUserByEmail(email);
 
     if (user) {
+      if (options?.fullModel) return user as ConditionalUserModel<B>;
+
       const { passwordHash, role, ...data } = user;
 
-      return data;
+      return data as ConditionalUserModel<B>;
     }
 
     return null;

@@ -1,6 +1,4 @@
 export class UserDto {
-  readonly id: number;
-
   readonly email: string;
 
   readonly password: string;
@@ -9,5 +7,15 @@ export class UserDto {
 
   readonly role?: 'client' | 'admin' | 'manager';
 
-  readonly contactPhone?: boolean;
+  readonly contactPhone?: string;
+}
+
+export class CreateUserDto {
+  readonly email: string;
+
+  readonly password: string;
+
+  readonly name: string;
+
+  readonly contactPhone?: string;
 }

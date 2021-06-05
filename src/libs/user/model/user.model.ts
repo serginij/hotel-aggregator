@@ -18,5 +18,5 @@ export class User {
   role: 'client' | 'admin' | 'manager';
 
   @Column({ nullable: true })
-  contactPhone: boolean;
+  contactPhone: string;
 }

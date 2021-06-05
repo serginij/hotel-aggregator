@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './libs/user/user.module';
 import { UtilsModule } from './src/utils/utils.module';
+import { AuthModule } from './libs/auth/auth.module';
 
 // const DB_HOST = process.env.DB_HOST || 'localhost';
 // const DB_PORT = process.env.DB_POST || 27019;
@@ -27,6 +28,7 @@ import { UtilsModule } from './src/utils/utils.module';
     // }),
     TypeOrmModule.forRoot(),
     UtilsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
