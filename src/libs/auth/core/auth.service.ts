@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { UserService } from 'src/libs/user/core/user.service';
 import { CreateUserDto, UserDto } from 'src/libs/user/dto/user.dto';
-import { BcryptService } from 'src/src/utils/bcrypt/bcrypt.service';
+import { BcryptService } from 'src/utils/bcrypt/bcrypt.service';
 import { IJwtPayload } from '../interface/auth.interface';
 import { JwtService } from '@nestjs/jwt';
 import { LoginUserDto } from '../dto/auth.dto';
+import { RoleEnum } from 'src/common/common.types';
 
 @Injectable()
 export class AuthService {
@@ -30,15 +31,23 @@ export class AuthService {
   };
 
   register = async (userDto: CreateUserDto) => {
-    const user = await this.userService.create({ ...userDto, role: 'client' });
+    const user = await this.userService.create({
+      ...userDto,
+      role: RoleEnum.CLIENT,
+    });
 
     if (!user) return null;
 
     return user;
   };
 
-  private generateToken = ({ email, name, contactPhone }: UserDto) => {
-    const user: IJwtPayload = { email, name, contactPhone };
+  private generateToken = ({ email, name, contactPhone, role }: UserDto) => {
+    const user: IJwtPayload = {
+      email,
+      name,
+      contactPhone,
+      role: role || RoleEnum.CLIENT,
+    };
 
     const token = this.jwtService.sign(user);
 

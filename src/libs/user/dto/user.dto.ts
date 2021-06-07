@@ -1,3 +1,5 @@
+import { RoleEnum } from 'src/common/common.types';
+
 export class UserDto {
   readonly email: string;
 
@@ -5,7 +7,7 @@ export class UserDto {
 
   readonly name: string;
 
-  readonly role?: 'client' | 'admin' | 'manager';
+  readonly role?: RoleEnum;
 
   readonly contactPhone?: string;
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BcryptService } from 'src/src/utils/bcrypt/bcrypt.service';
+import { BcryptService } from 'src/utils/bcrypt/bcrypt.service';
 
 import { UserDto } from '../dto/user.dto';
 import { SearchUserParams, TBaseUserInfo } from '../interface/user.interface';

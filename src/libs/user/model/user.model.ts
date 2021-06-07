@@ -1,3 +1,4 @@
+import { RoleEnum } from 'src/common/common.types';
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
@@ -14,8 +15,8 @@ export class User {
   @Column()
   name: string;
 
-  @Column({ default: 'client' })
-  role: 'client' | 'admin' | 'manager';
+  @Column({ default: RoleEnum.CLIENT })
+  role: RoleEnum;
 
   @Column({ nullable: true })
   contactPhone: string;
