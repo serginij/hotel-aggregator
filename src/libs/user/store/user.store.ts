@@ -1,11 +1,11 @@
 import { EntityRepository, Like, Repository } from 'typeorm';
 
 import { User } from '../model/user.model';
-import { UserDto } from '../dto/user.dto';
-import { SearchUserParams } from '../interface/user.interface';
+
+import { SearchUserParams, TCreateUserData } from '../interface/user.interface';
 
 interface IUserStore {
-  createUser: (userDto: UserDto) => Promise<User | undefined>;
+  createUser: (userDto: TCreateUserData) => Promise<User | undefined>;
   findUserByEmail: (email: string) => Promise<User | undefined>;
   findUserById: (id: string) => Promise<User | undefined>;
   findAllUsers: (params: SearchUserParams) => Promise<User[] | undefined>;
@@ -13,8 +13,10 @@ interface IUserStore {
 
 @EntityRepository(User)
 export class UserStore extends Repository<User> implements IUserStore {
-  createUser = async (userDto: UserDto) => {
-    return await this.save(userDto);
+  createUser = async (userDto: TCreateUserData) => {
+    const user = User.create(userDto);
+
+    return await user.save();
   };
 
   findUserByEmail = async (email: string) => {

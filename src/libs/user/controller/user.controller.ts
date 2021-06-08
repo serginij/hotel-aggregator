@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleEnum } from 'src/common/common.types';
+
 import { Roles } from 'src/common/decorators/roles.decorator';
 
 import { UserService } from '../core/user.service';
@@ -22,7 +23,7 @@ export class UserController {
 
   // TODO: check if ROLE === admin
   @Roles(RoleEnum.ADMIN)
-  @Post('/admin/users')
+  @Post('admin/users')
   async createUser(@Body() data: UserDto) {
     const user = await this.userService.create(data);
 
@@ -36,14 +37,14 @@ export class UserController {
 
   // TODO: check if ROLE === admin
   @Roles(RoleEnum.ADMIN)
-  @Get('/admin/users')
+  @Get('admin/users')
   async getAdminUsers(@Query() params: SearchUserParams) {
     return await this.userService.findAll(params);
   }
 
   // TODO: check if ROLE === manager
   @Roles(RoleEnum.MANAGER)
-  @Get('/manager/users')
+  @Get('manager/users')
   async getUsers(@Query() params: SearchUserParams) {
     return await this.userService.findAll(params);
   }

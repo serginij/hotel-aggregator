@@ -1,12 +1,12 @@
 import { RoleEnum } from 'src/common/common.types';
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, BaseEntity, ObjectIdColumn, ObjectID } from 'typeorm';
 
 @Entity()
-export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
+export class User extends BaseEntity {
+  @ObjectIdColumn()
+  id: ObjectID;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @Column()
@@ -19,5 +19,5 @@ export class User {
   role: RoleEnum;
 
   @Column({ nullable: true })
-  contactPhone: string;
+  contactPhone?: string;
 }

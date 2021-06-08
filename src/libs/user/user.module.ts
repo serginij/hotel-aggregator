@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UtilsModule } from 'src/utils/utils.module';
 import { UserController } from './controller/user.controller';
@@ -7,8 +8,12 @@ import { User } from './model/user.model';
 import { UserStore } from './store/user.store';
 
 @Module({
-  imports: [UtilsModule, TypeOrmModule.forFeature([User, UserStore])],
-  providers: [UserController, UserService],
+  imports: [
+    PassportModule,
+    UtilsModule,
+    TypeOrmModule.forFeature([User, UserStore]),
+  ],
+  providers: [UserController, UserService, UserStore],
   exports: [UserService],
 })
 export class UserModule {}

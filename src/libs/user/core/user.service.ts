@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { RoleEnum } from 'src/common/common.types';
 import { BcryptService } from 'src/utils/bcrypt/bcrypt.service';
 
 import { UserDto } from '../dto/user.dto';
@@ -27,7 +28,7 @@ export class UserService implements IUserService {
   ) {}
 
   create = async (user: UserDto) => {
-    const { password, ...userData } = user;
+    const { password, role, ...userData } = user;
 
     const encryptedPassword = await this.bcryptService.encryptPassword(
       password,
@@ -35,7 +36,8 @@ export class UserService implements IUserService {
 
     return await this.userStore.createUser({
       ...userData,
-      password: encryptedPassword,
+      passwordHash: encryptedPassword,
+      role: role ?? RoleEnum.CLIENT,
     });
   };
 
