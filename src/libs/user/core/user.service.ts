@@ -11,7 +11,7 @@ import { UserStore } from '../store/user.store';
 type ConditionalUserModel<B> = B extends true ? User : TBaseUserInfo;
 
 interface IUserService {
-  create(data: Partial<User>): Promise<User>;
+  create(data: Partial<User>): Promise<User | null>;
   findById(id: string): Promise<TBaseUserInfo | null>;
   findByEmail<B extends true>(
     email: string,
@@ -29,6 +29,10 @@ export class UserService implements IUserService {
 
   create = async (user: UserDto) => {
     const { password, role, ...userData } = user;
+
+    const userExists = await this.userStore.findUserByEmail(user.email);
+
+    if (userExists) return null;
 
     const encryptedPassword = await this.bcryptService.encryptPassword(
       password,

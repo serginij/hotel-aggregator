@@ -20,17 +20,17 @@ export class UserStore extends Repository<User> implements IUserStore {
   };
 
   findUserByEmail = async (email: string) => {
-    return await this.findOne({ email });
+    return await User.findOne({ email });
   };
 
   findUserById = async (id: string) => {
-    return await this.findOne(id);
+    return await User.findOne(id);
   };
 
   findAllUsers = async (params: SearchUserParams) => {
     const { limit, offset, name, email, contactPhone } = params;
 
-    return await this.find({
+    return await User.find({
       skip: offset,
       take: limit,
       where: {

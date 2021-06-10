@@ -7,6 +7,8 @@ import { JwtService } from '@nestjs/jwt';
 import { LoginUserDto } from '../dto/auth.dto';
 import { RoleEnum } from 'src/common/common.types';
 
+const JWT_TOKEN_TTL = Number(process.env.JWT_TOKEN_TTL || 3600);
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -21,8 +23,8 @@ export class AuthService {
     if (user) {
       const { passwordHash, ...result } = user;
       const isEquals = await this.bcryptService.decryptPassword(
-        pass,
         passwordHash,
+        pass,
       );
 
       if (isEquals) return result;
@@ -52,7 +54,7 @@ export class AuthService {
     const token = this.jwtService.sign(user);
 
     return {
-      expiresIn: process.env.JWT_TOKEN_TTL,
+      expiresIn: JWT_TOKEN_TTL,
       token,
     };
   };
@@ -64,6 +66,8 @@ export class AuthService {
     if (!user) return null;
 
     const token = this.generateToken(user as any);
+
+    console.log({ token });
 
     return token;
   };

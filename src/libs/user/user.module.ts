@@ -13,7 +13,8 @@ import { UserStore } from './store/user.store';
     UtilsModule,
     TypeOrmModule.forFeature([User, UserStore]),
   ],
-  providers: [UserController, UserService, UserStore],
+  controllers: [UserController],
+  providers: [UserService, UserStore],
   exports: [UserService],
 })
 export class UserModule {}

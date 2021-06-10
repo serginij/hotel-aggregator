@@ -7,8 +7,6 @@ import { UtilsModule } from './utils/utils.module';
 import { AuthModule } from './libs/auth/auth.module';
 import 'reflect-metadata';
 
-console.log(process.env.TYPEORM_ENTITIES);
-
 @Injectable()
 @Module({
   imports: [UserModule, TypeOrmModule.forRoot(), UtilsModule, AuthModule],
