@@ -5,18 +5,31 @@ import {
   Get,
   InternalServerErrorException,
   Post,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { CreateUserDto } from 'src/libs/user/dto/user.dto';
 import { AuthService } from '../core/auth.service';
 import { LoginUserDto } from '../dto/auth.dto';
 import { Response } from 'express';
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  @Get()
+  async helloWorld() {
+    return 'Hello world';
+  }
+
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  async getMe(@Req() req: any) {
+    console.log(req.user);
+    return req.user;
+  }
 
   // TODO: add cookie to response, check why res is empty
   @Post('login')

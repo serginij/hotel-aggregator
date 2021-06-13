@@ -27,6 +27,8 @@ export class AuthService {
         pass,
       );
 
+      console.log('validateUser', result);
+
       if (isEquals) return result;
     }
     return null;

@@ -7,9 +7,7 @@ import {
   Get,
   Query,
   BadRequestException,
-  Req,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { RoleEnum } from 'src/common/common.types';
 
 import { Roles } from 'src/common/decorators/roles.decorator';
@@ -20,25 +18,11 @@ import { UserService } from '../core/user.service';
 import { UserDto } from '../dto/user.dto';
 import { SearchUserParams } from '../interface/user.interface';
 
-@UseGuards(RolesGuard)
-// @UseGuards(AuthGuard())
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get()
-  async helloWorld() {
-    return 'Hello world';
-  }
-
-  @Get('me')
-  @UseGuards(JwtAuthGuard)
-  async getMe(@Req() req: any) {
-    console.log(req.user);
-    return req.user;
-  }
-
-  // TODO: check if ROLE === admin
   @Roles(RoleEnum.ADMIN)
   @Post('admin')
   async createUser(@Body() data: UserDto) {
@@ -55,14 +39,12 @@ export class UserController {
     return user;
   }
 
-  // TODO: check if ROLE === admin
   @Roles(RoleEnum.ADMIN)
   @Get('admin')
   async getAdminUsers(@Query() params: SearchUserParams) {
     return await this.userService.findAll(params);
   }
 
-  // TODO: check if ROLE === manager
   @Roles(RoleEnum.MANAGER)
   @Get('manager')
   async getUsers(@Query() params: SearchUserParams) {
