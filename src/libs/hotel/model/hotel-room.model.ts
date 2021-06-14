@@ -18,6 +18,9 @@ export class HotelRoom extends BaseEntity {
   @ManyToOne(() => Hotel, (hotel) => hotel.rooms)
   hotel: Hotel;
 
+  @Column()
+  title: string;
+
   @Column({ nullable: true })
   description?: string;
 
