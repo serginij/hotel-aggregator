@@ -7,6 +7,8 @@ import {
   Get,
   Query,
   BadRequestException,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { RoleEnum } from 'src/common/common.types';
 
@@ -15,8 +17,7 @@ import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 
 import { UserService } from '../core/user.service';
-import { UserDto } from '../dto/user.dto';
-import { SearchUserParams } from '../interface/user.interface';
+import { SearchUserQuery, UserDto } from '../dto/user.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('users')
@@ -41,13 +42,15 @@ export class UserController {
 
   @Roles(RoleEnum.ADMIN)
   @Get('admin')
-  async getAdminUsers(@Query() params: SearchUserParams) {
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async getAdminUsers(@Query() params: SearchUserQuery) {
     return await this.userService.findAll(params);
   }
 
   @Roles(RoleEnum.MANAGER)
   @Get('manager')
-  async getUsers(@Query() params: SearchUserParams) {
+  @UsePipes(new ValidationPipe())
+  async getUsers(@Query() params: SearchUserQuery) {
     return await this.userService.findAll(params);
   }
 }

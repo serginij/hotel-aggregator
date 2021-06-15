@@ -28,7 +28,9 @@ export class UserStore extends Repository<User> implements IUserStore {
   };
 
   findAllUsers = async (params: SearchUserParams) => {
-    const { limit, offset, name, email, contactPhone } = params;
+    const { limit, offset, name = '', email = '', contactPhone = '' } = params;
+
+    console.log(params);
 
     return await User.find({
       skip: offset,
