@@ -41,6 +41,7 @@ export class HotelController {
 
   @Roles(RoleEnum.ADMIN)
   @Get()
+  @UsePipes(new ValidationPipe())
   async getHotels(@Query() params: SearchHotelParams) {
     return await this.hotelService.findAll(params);
   }

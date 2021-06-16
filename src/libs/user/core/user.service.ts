@@ -77,10 +77,6 @@ export class UserService implements IUserService {
   findAll = async (params: SearchUserParams) => {
     const users = await this.userStore.findAllUsers(params);
 
-    if (users) {
-      return users.map(({ passwordHash, ...user }) => user);
-    }
-
-    return null;
+    return users.map(({ passwordHash, ...user }) => user);
   };
 }

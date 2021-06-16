@@ -26,6 +26,7 @@ export class UserController {
 
   @Roles(RoleEnum.ADMIN)
   @Post('admin')
+  @UsePipes(new ValidationPipe())
   async createUser(@Body() data: UserDto) {
     const user = await this.userService.create(data);
 

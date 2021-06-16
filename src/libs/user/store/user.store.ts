@@ -1,4 +1,4 @@
-import { EntityRepository, Like, Repository } from 'typeorm';
+import { EntityRepository, Repository } from 'typeorm';
 
 import { User } from '../model/user.model';
 
@@ -28,17 +28,16 @@ export class UserStore extends Repository<User> implements IUserStore {
   };
 
   findAllUsers = async (params: SearchUserParams) => {
-    const { limit, offset, name = '', email = '', contactPhone = '' } = params;
-
-    console.log(params);
+    const { limit, offset, name = '', email = '', contactPhone } = params;
 
     return await User.find({
       skip: offset,
       take: limit,
+
       where: {
-        name: Like(name),
-        email: Like(email),
-        contactPhone: Like(contactPhone),
+        name: new RegExp(name),
+        email: new RegExp(email),
+        contactPhone: contactPhone ? new RegExp(contactPhone) : undefined,
       },
     });
   };

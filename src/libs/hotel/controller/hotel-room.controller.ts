@@ -75,6 +75,7 @@ export class HotelRoomController {
   }
 
   @Get()
+  @UsePipes(new ValidationPipe())
   async getHotelRooms(@Query() params: SearchHotelRoomParams) {
     return await this.hotelRoomService.findAll(params);
   }

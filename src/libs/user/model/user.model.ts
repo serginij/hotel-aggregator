@@ -18,6 +18,6 @@ export class User extends BaseEntity {
   @Column({ default: RoleEnum.CLIENT })
   role: RoleEnum;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, default: null })
   contactPhone?: string;
 }
