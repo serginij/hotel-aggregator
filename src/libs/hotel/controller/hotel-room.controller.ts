@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Param,
   UploadedFiles,
   UseInterceptors,
@@ -16,37 +17,52 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { MAX_IMAGE_SIZE } from 'src/common/common.constants';
 import { RoleEnum } from 'src/common/common.types';
 
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
-import { imageFileFilter } from 'src/common/util/image-file-filter';
+import {
+  imageFileFilter,
+  imageFileStorage,
+} from 'src/common/util/image-file-filter';
 
 import { HotelRoomService } from '../core/hotel-room.service';
 import { HotelRoomDto, UpdateHotelRoomDto } from '../dto/hotel-room.dto';
 import { SearchHotelRoomParams } from '../interface/hotel-room.interface';
 
+const fileInterceptor = FilesInterceptor('files', 5, {
+  fileFilter: imageFileFilter,
+  storage: imageFileStorage,
+  limits: { fileSize: MAX_IMAGE_SIZE },
+});
+
 @Controller('hotel-rooms')
 export class HotelRoomController {
   constructor(private readonly hotelRoomService: HotelRoomService) {}
 
-  // TODO: add images processing
+  private convertUploadedFiles = (files: Array<Express.Multer.File>) => {
+    return files.map(({ filename }) => filename);
+  };
+
   @Roles(RoleEnum.ADMIN)
   @Post()
+  @UseInterceptors(fileInterceptor)
   @UsePipes(new ValidationPipe())
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @UseInterceptors(
-    FilesInterceptor('files', 5, { fileFilter: imageFileFilter }),
-  )
-  // TODO: transform images into string array
   async createHotelRoom(
     @Body() data: HotelRoomDto,
     @UploadedFiles() files: Array<Express.Multer.File>,
   ) {
     console.log({ files });
+    if (files.length < 1)
+      throw new BadRequestException('Hotel room must have at least 1 image');
 
-    const hotelRoom = await this.hotelRoomService.create(data);
+    const hotelRoom = await this.hotelRoomService.create({
+      ...data,
+      images: this.convertUploadedFiles(files),
+    });
 
     if (!hotelRoom)
       throw new InternalServerErrorException(
@@ -56,22 +72,21 @@ export class HotelRoomController {
     return hotelRoom;
   }
 
-  // TODO: add images processing
   @Roles(RoleEnum.ADMIN)
   @Put('/:id')
   @UsePipes(new ValidationPipe())
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @UseInterceptors(
-    FilesInterceptor('files', 5, { fileFilter: imageFileFilter }),
-  )
-  // TODO: merge images with files into string array
+  @UseInterceptors(fileInterceptor)
   async updateHotelRooms(
     @Param() id: string,
     @Body() data: UpdateHotelRoomDto,
     @UploadedFiles() files: Array<Express.Multer.File>,
   ) {
-    console.log({ files });
-    return await this.hotelRoomService.update(id, data);
+    const images = (data.images ?? []).concat(
+      this.convertUploadedFiles(files ?? []),
+    );
+    console.log({ files, images });
+    return await this.hotelRoomService.update(id, { ...data, images });
   }
 
   @Get()

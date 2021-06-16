@@ -1,4 +1,4 @@
-import { EntityRepository, Like, Repository } from 'typeorm';
+import { EntityRepository, Repository } from 'typeorm';
 
 import { HotelRoom } from '../model/hotel-room.model';
 
@@ -51,8 +51,8 @@ export class HotelRoomStore
       skip: offset,
       take: limit,
       where: {
-        title: Like(title),
-        isEnabled: Like(isEnabled),
+        title: new RegExp(title),
+        isEnabled,
       },
     });
   };

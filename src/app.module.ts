@@ -6,10 +6,17 @@ import { UserModule } from './libs/user/user.module';
 import { UtilsModule } from './utils/utils.module';
 import { AuthModule } from './libs/auth/auth.module';
 import 'reflect-metadata';
+import { HotelModule } from './libs/hotel/hotel.module';
 
 @Injectable()
 @Module({
-  imports: [UserModule, TypeOrmModule.forRoot(), UtilsModule, AuthModule],
+  imports: [
+    UserModule,
+    TypeOrmModule.forRoot(),
+    UtilsModule,
+    AuthModule,
+    HotelModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

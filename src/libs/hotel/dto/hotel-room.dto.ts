@@ -20,8 +20,8 @@ export class HotelRoomDto {
   @IsOptional()
   readonly description?: string;
 
-  @IsArray()
-  @IsString({ each: true })
+  // @IsArray()
+  // @IsString({ each: true })
   readonly images: string[];
 }
 

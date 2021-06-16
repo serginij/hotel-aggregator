@@ -1,8 +1,8 @@
-import { FileFilterCallback } from 'multer';
+import { FileFilterCallback, diskStorage } from 'multer';
+import { IMAGE_FILE_DEST } from '../common.constants';
+import { v4 as uuid } from 'uuid';
 
 const imageMimes = ['image/png', 'image/jpeg'];
-
-const maxSize = 1024 * 1024 * 5; // 5MB
 
 export const imageFileFilter = (
   req: Request,
@@ -11,7 +11,14 @@ export const imageFileFilter = (
 ) => {
   const isTypeAllowed = imageMimes.includes(file.mimetype);
 
-  const isSizeAllowed = file.size <= maxSize;
-
-  return cb(null, isTypeAllowed && isSizeAllowed);
+  return cb(null, isTypeAllowed);
 };
+
+export const imageFileStorage = diskStorage({
+  destination(req, file, cb) {
+    cb(null, IMAGE_FILE_DEST);
+  },
+  filename(req, file, cb) {
+    cb(null, `${uuid()}.${file.originalname.split('.').pop()}`);
+  },
+});

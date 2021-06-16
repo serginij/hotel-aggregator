@@ -33,7 +33,6 @@ export class UserStore extends Repository<User> implements IUserStore {
     return await User.find({
       skip: offset,
       take: limit,
-
       where: {
         name: new RegExp(name),
         email: new RegExp(email),

@@ -1,4 +1,4 @@
-import { EntityRepository, Like, Repository } from 'typeorm';
+import { EntityRepository, Repository } from 'typeorm';
 
 import { Hotel } from '../model/hotel.model';
 
@@ -37,7 +37,7 @@ export class HotelStore extends Repository<Hotel> implements IHotelStore {
       skip: offset,
       take: limit,
       where: {
-        title: Like(title),
+        title: new RegExp(title),
       },
     });
   };
