@@ -67,8 +67,6 @@ export class AuthService {
 
     const token = this.generateToken(user as any);
 
-    console.log({ token });
-
     return token;
   };
 }

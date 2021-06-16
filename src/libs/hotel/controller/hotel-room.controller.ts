@@ -55,7 +55,6 @@ export class HotelRoomController {
     @Body() data: HotelRoomDto,
     @UploadedFiles() files: Array<Express.Multer.File>,
   ) {
-    console.log({ files });
     if (files.length < 1)
       throw new BadRequestException('Hotel room must have at least 1 image');
 
@@ -85,7 +84,7 @@ export class HotelRoomController {
     const images = (data.images ?? []).concat(
       this.convertUploadedFiles(files ?? []),
     );
-    console.log({ files, images });
+
     return await this.hotelRoomService.update(id, { ...data, images });
   }
 
