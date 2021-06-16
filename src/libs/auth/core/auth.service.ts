@@ -27,8 +27,6 @@ export class AuthService {
         pass,
       );
 
-      console.log('validateUser', result);
-
       if (isEquals) return result;
     }
     return null;
@@ -68,8 +66,6 @@ export class AuthService {
     if (!user) return null;
 
     const token = this.generateToken(user as any);
-
-    console.log({ token });
 
     return token;
   };
