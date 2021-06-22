@@ -7,18 +7,19 @@ import {
   TCreateHotelRoomData,
   TUpdateHotelRoomData,
 } from '../interface/hotel-room.interface';
+import { ID } from 'src/common/common.types';
 
 interface IHotelRoomStore {
   createHotelRoom: (
     hotelRoomDto: TCreateHotelRoomData,
   ) => Promise<HotelRoom | undefined>;
 
-  findHotelRoomById: (id: string) => Promise<HotelRoom | undefined>;
+  findHotelRoomById: (id: ID) => Promise<HotelRoom | undefined>;
   findAllHotelRooms: (
     params: SearchHotelRoomParams,
   ) => Promise<HotelRoom[] | undefined>;
   updateHotelRoom: (
-    id: string,
+    id: ID,
     hotelRoomDto: TUpdateHotelRoomData,
   ) => Promise<HotelRoom>;
 }
@@ -34,13 +35,13 @@ export class HotelRoomStore
     return await hotelRoom.save();
   };
 
-  updateHotelRoom = async (id: string, hotelRoomDto: TUpdateHotelRoomData) => {
+  updateHotelRoom = async (id: ID, hotelRoomDto: TUpdateHotelRoomData) => {
     const hotelRoom = await HotelRoom.update(id, hotelRoomDto);
 
     return hotelRoom.raw;
   };
 
-  findHotelRoomById = async (id: string) => {
+  findHotelRoomById = async (id: ID) => {
     return await HotelRoom.findOne(id);
   };
 

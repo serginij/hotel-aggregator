@@ -49,7 +49,7 @@ export class HotelController {
   @Roles(RoleEnum.ADMIN)
   @Put('/:id')
   @UsePipes(new ValidationPipe())
-  async updateHotels(@Param() id: string, @Body() data: HotelDto) {
+  async updateHotels(@Param('id') id: string, @Body() data: HotelDto) {
     return await this.hotelService.update(id, data);
   }
 }

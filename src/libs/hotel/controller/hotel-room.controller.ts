@@ -95,7 +95,7 @@ export class HotelRoomController {
   }
 
   @Get('/:id')
-  async getHotelRoomById(@Param() id: string) {
+  async getHotelRoomById(@Param('id') id: string) {
     return await this.hotelRoomService.findById(id);
   }
 }
