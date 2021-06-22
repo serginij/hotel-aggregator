@@ -62,7 +62,12 @@ export class ReservationController {
   @Roles(RoleEnum.CLIENT)
   @Get()
   // TODO: fix date transform
-  @UsePipes(new ValidationPipe({ transform: true }))
+  @UsePipes(
+    new ValidationPipe({
+      transform: true,
+      transformOptions: { enableImplicitConversion: true },
+    }),
+  )
   async getReservations(@Req() req, @Query() params: SearchUserReservationDto) {
     const userId = req.user.id;
     return await this.reservationService.findAllUserReservations({
