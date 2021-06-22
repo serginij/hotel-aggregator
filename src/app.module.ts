@@ -8,6 +8,7 @@ import { AuthModule } from './libs/auth/auth.module';
 import 'reflect-metadata';
 import { HotelModule } from './libs/hotel/hotel.module';
 import { ReservationModule } from './libs/reservation/reservation.module';
+import { SupportModule } from './libs/support/support.module';
 
 @Injectable()
 @Module({
@@ -18,6 +19,7 @@ import { ReservationModule } from './libs/reservation/reservation.module';
     AuthModule,
     HotelModule,
     ReservationModule,
+    SupportModule,
   ],
   controllers: [AppController],
   providers: [AppService],
