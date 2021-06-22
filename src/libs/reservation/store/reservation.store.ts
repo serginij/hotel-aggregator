@@ -33,6 +33,8 @@ export class ReservationStore
   findAllReservations = async (params: SearchReservationParams) => {
     const { userId, dateEnd, dateStart, hotelId, roomId } = params;
 
+    console.log(params);
+
     // TODO: check if it works
     return await Reservation.find({
       where: params,

@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ID } from 'src/common/common.types';
-import { ReservationDto } from '../dto/reservation.dto';
 import {
   CreateUserReservationData,
   SearchReservationParams,
@@ -35,8 +34,8 @@ export class ReservationService implements IReservationService {
   ) {}
 
   private checkIfReservationEmpty = async (params: {
-    hotelId: string;
-    roomId: string;
+    hotelId: ID;
+    roomId: ID;
     dateStart: Date;
     dateEnd: Date;
   }): Promise<boolean> => {

@@ -8,12 +8,13 @@ import { HotelRoom } from '../model/hotel-room.model';
 import { HotelRoomStore } from '../store/hotel-room.store';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { HotelService } from './hotel.service';
+import { ID } from 'src/common/common.types';
 
 interface IHotelRoomService {
   create(data: HotelRoomDto): Promise<HotelRoom | null>;
-  findById(id: string): Promise<HotelRoom | null>;
+  findById(id: ID): Promise<HotelRoom | null>;
   findAll(params: SearchHotelRoomParams): Promise<HotelRoom[]>;
-  update(id: string, data: TUpdateHotelRoomData): Promise<HotelRoom | null>;
+  update(id: ID, data: TUpdateHotelRoomData): Promise<HotelRoom | null>;
 }
 
 @Injectable()
@@ -38,7 +39,7 @@ export class HotelRoomService implements IHotelRoomService {
     return res;
   };
 
-  findById = async (id: string) => {
+  findById = async (id: ID) => {
     const hotelRoom = await this.hotelRoomStore.findHotelRoomById(id);
 
     if (!hotelRoom) return null;
@@ -46,7 +47,7 @@ export class HotelRoomService implements IHotelRoomService {
     return hotelRoom;
   };
 
-  update = async (id: string, hotel: TUpdateHotelRoomData) => {
+  update = async (id: ID, hotel: TUpdateHotelRoomData) => {
     const updatedRoom = await this.hotelRoomStore.updateHotelRoom(id, hotel);
 
     if (!updatedRoom) return null;

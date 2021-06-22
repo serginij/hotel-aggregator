@@ -7,14 +7,15 @@ import {
   TCreateHotelData,
   TUpdateHotelData,
 } from '../interface/hotel.interface';
+import { ID } from 'src/common/common.types';
 
 interface IHotelStore {
   createHotel: (hotel: TCreateHotelData) => Promise<Hotel | undefined>;
   updateHotel: (
-    id: string,
+    id: ID,
     hotelDto: TUpdateHotelData,
   ) => Promise<Hotel | undefined>;
-  findHotelById: (id: string) => Promise<Hotel | undefined>;
+  findHotelById: (id: ID) => Promise<Hotel | undefined>;
   findAllHotels: (params: SearchHotelParams) => Promise<Hotel[] | undefined>;
 }
 
@@ -26,7 +27,7 @@ export class HotelStore extends Repository<Hotel> implements IHotelStore {
     return await hotel.save();
   };
 
-  findHotelById = async (id: string) => {
+  findHotelById = async (id: ID) => {
     return await Hotel.findOne(id);
   };
 
@@ -42,7 +43,7 @@ export class HotelStore extends Repository<Hotel> implements IHotelStore {
     });
   };
 
-  updateHotel = async (id: string, hotelDto: TUpdateHotelData) => {
+  updateHotel = async (id: ID, hotelDto: TUpdateHotelData) => {
     const hotelRoom = await Hotel.update(id, hotelDto);
 
     return hotelRoom.raw;
