@@ -56,11 +56,8 @@ export class SupportRequestStore
     id: ID,
     supportRequestDto: TUpdateSupportRequestData,
   ) => {
-    const supportRequestRoom = await SupportRequest.update(
-      id,
-      supportRequestDto,
-    );
+    const supportRequest = await SupportRequest.update(id, supportRequestDto);
 
-    return supportRequestRoom.raw;
+    return supportRequest.raw;
   };
 }
