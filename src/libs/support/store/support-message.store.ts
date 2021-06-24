@@ -31,7 +31,9 @@ interface ISupportMessageStore {
     params: SearchSupportMessageParams,
   ) => Promise<SupportMessage[] | undefined>;
   markUserMessagesAsRead: (data: IMarkMessagesAsRead) => Promise<boolean>;
-  getUnreadUserMessagesCount: (
+  markManagerMessagesAsRead: (data: IMarkMessagesAsRead) => Promise<boolean>;
+  getUnreadUserMessages: (params: IGetUnreadCount) => Promise<SupportMessage[]>;
+  getUnreadManagerMessages: (
     params: IGetUnreadCount,
   ) => Promise<SupportMessage[]>;
 }
@@ -79,23 +81,54 @@ export class SupportMessageStore
   ): Promise<boolean> => {
     const { supportRequest, createdBefore, user } = data;
 
+    const now = Date.now();
+
     const res = await SupportMessage.update(
-      { readAt: Date.now() },
       {
         author: user as string,
         supportRequest: supportRequest as any,
-        sendAt: LessThanOrEqual(createdBefore) as any,
+        sendAt: LessThanOrEqual(createdBefore),
+        readAt: IsNull(),
       },
+      { readAt: now },
     );
 
     return !!res;
   };
 
-  getUnreadUserMessagesCount = async (params: IGetUnreadCount) => {
+  markManagerMessagesAsRead = async (
+    data: IMarkMessagesAsRead,
+  ): Promise<boolean> => {
+    const { supportRequest, createdBefore, user } = data;
+
+    const now = Date.now();
+
+    const res = await SupportMessage.update(
+      {
+        author: Not(Equal(user as string)),
+        supportRequest: supportRequest as any,
+        sendAt: LessThanOrEqual(createdBefore),
+        readAt: IsNull(),
+      },
+      { readAt: now },
+    );
+
+    return !!res;
+  };
+
+  getUnreadUserMessages = async (params: IGetUnreadCount) => {
     const { user, supportRequest } = params;
 
     return await SupportMessage.find({
       where: { author: Not(Equal(user)), supportRequest, readAt: IsNull() },
+    });
+  };
+
+  getUnreadManagerMessages = async (params: IGetUnreadCount) => {
+    const { user, supportRequest } = params;
+
+    return await SupportMessage.find({
+      where: { author: Equal(user), supportRequest, readAt: IsNull() },
     });
   };
 }

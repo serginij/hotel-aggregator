@@ -56,9 +56,7 @@ export class SupportRequestClientService
   };
 
   getUnreadCount = async (params: IGetUnreadCount) => {
-    const data = await this.supportMessageStore.getUnreadUserMessagesCount(
-      params,
-    );
+    const data = await this.supportMessageStore.getUnreadUserMessages(params);
 
     return data.length;
   };

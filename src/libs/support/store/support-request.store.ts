@@ -21,6 +21,7 @@ interface ISupportRequestStore {
   findAllSupportRequests: (
     params: SearchSupportRequestParams,
   ) => Promise<SupportRequest[] | undefined>;
+  closeRequest: (id: ID) => Promise<SupportRequest>;
 }
 
 @EntityRepository(SupportRequest)
@@ -57,5 +58,11 @@ export class SupportRequestStore
     const supportRequest = await SupportRequest.update(id, supportRequestDto);
 
     return supportRequest.raw;
+  };
+
+  closeRequest = async (id: ID) => {
+    return await (
+      await SupportRequest.update(id, { isActive: false })
+    ).raw;
   };
 }
