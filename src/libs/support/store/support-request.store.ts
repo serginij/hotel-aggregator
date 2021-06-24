@@ -4,14 +4,14 @@ import { SupportRequest } from '../model/support-request.model';
 
 import {
   SearchSupportRequestParams,
-  TCreateSupportRequestData,
+  TCreateSupportRequest,
   TUpdateSupportRequestData,
 } from '../interface/support-request.interface';
 import { ID } from 'src/common/common.types';
 
 interface ISupportRequestStore {
   createSupportRequest: (
-    supportRequest: TCreateSupportRequestData,
+    supportRequest: TCreateSupportRequest,
   ) => Promise<SupportRequest | undefined>;
   updateSupportRequest: (
     id: ID,
@@ -28,9 +28,7 @@ export class SupportRequestStore
   extends Repository<SupportRequest>
   implements ISupportRequestStore
 {
-  createSupportRequest = async (
-    supportRequestDto: TCreateSupportRequestData,
-  ) => {
+  createSupportRequest = async (supportRequestDto: TCreateSupportRequest) => {
     const supportRequest = SupportRequest.create(supportRequestDto);
 
     return await supportRequest.save();

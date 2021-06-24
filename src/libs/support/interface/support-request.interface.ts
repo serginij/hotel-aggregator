@@ -11,6 +11,10 @@ export type TBaseSupportRequestInfo = Pick<
   'id' | 'userId' | 'messages' | 'createdAt'
 >;
 
-export type TCreateSupportRequestData = Pick<SupportRequest, 'userId'>;
+export type TCreateSupportRequestData = Pick<SupportRequest, 'userId'> & {
+  text: string;
+};
+
+export type TCreateSupportRequest = Pick<SupportRequest, 'userId'>;
 
 export type TUpdateSupportRequestData = Partial<TCreateSupportRequestData>;

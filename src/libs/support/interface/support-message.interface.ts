@@ -1,3 +1,4 @@
+import { ID } from 'src/common/common.types';
 import { SupportMessage } from '../model/support-message.model';
 
 export interface SearchSupportMessageParams {
@@ -17,3 +18,13 @@ export type TCreateSupportMessageData = Pick<
 >;
 
 export type TUpdateSupportMessageData = Partial<TCreateSupportMessageData>;
+export interface IMarkMessagesAsRead {
+  user: ID;
+  supportRequest: ID;
+  createdBefore: Date;
+}
+
+export interface IGetUnreadCount {
+  user: ID;
+  supportRequest: ID;
+}
