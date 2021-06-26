@@ -1,20 +1,27 @@
+import { ID } from 'src/common/common.types';
 import { SupportRequest } from '../model/support-request.model';
 
-export interface SearchSupportRequestParams {
+export interface ISearchSupportRequestParams {
+  userId?: ID;
+  isActive: boolean;
   limit: number;
   offset: number;
-  title: string;
 }
 
 export type TBaseSupportRequestInfo = Pick<
   SupportRequest,
-  'id' | 'userId' | 'messages' | 'createdAt'
+  'id' | 'userId' | 'createdAt'
 >;
 
 export type TCreateSupportRequestData = Pick<SupportRequest, 'userId'> & {
   text: string;
 };
 
-export type TCreateSupportRequest = Pick<SupportRequest, 'userId'>;
+export type TCreateSupportRequest = Pick<SupportRequest, 'userId'> & {
+  isActive: boolean;
+};
 
-export type TUpdateSupportRequestData = Partial<TCreateSupportRequestData>;
+export interface ICheckUserAccess {
+  userId: ID;
+  supportRequest: ID;
+}

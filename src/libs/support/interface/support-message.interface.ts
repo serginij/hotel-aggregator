@@ -1,30 +1,30 @@
 import { ID } from 'src/common/common.types';
 import { SupportMessage } from '../model/support-message.model';
 
-export interface SearchSupportMessageParams {
-  limit: number;
-  offset: number;
-  title: string;
+export interface SearchMessageParams {
+  text?: string;
+  supportRequest: ID;
 }
 
-export type TBaseSupportMessageInfo = Pick<
+export type TBaseMessageInfo = Pick<
   SupportMessage,
-  'id' | 'author' | 'sendAt' | 'text'
+  'id' | 'author' | 'sentAt' | 'text' | 'supportRequest'
 >;
 
-export type TCreateSupportMessageData = Pick<
+export type TSendMessageData = Pick<
   SupportMessage,
   'author' | 'text' | 'supportRequest'
 >;
 
-export type TUpdateSupportMessageData = Partial<TCreateSupportMessageData>;
+export type TUpdateSupportMessageData = Partial<TSendMessageData>;
+
 export interface IMarkMessagesAsRead {
-  user: ID;
+  userId: ID;
   supportRequest: ID;
   createdBefore: Date;
 }
 
 export interface IGetUnreadCount {
-  user: ID;
+  userId: ID;
   supportRequest: ID;
 }

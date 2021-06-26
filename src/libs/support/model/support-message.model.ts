@@ -5,9 +5,7 @@ import {
   ObjectIdColumn,
   ObjectID,
   CreateDateColumn,
-  ManyToOne,
 } from 'typeorm';
-import { SupportRequest } from './support-request.model';
 
 @Entity()
 export class SupportMessage extends BaseEntity {
@@ -18,7 +16,7 @@ export class SupportMessage extends BaseEntity {
   author: string;
 
   @CreateDateColumn()
-  sendAt: Date;
+  sentAt: Date;
 
   @Column()
   text: string;
@@ -26,6 +24,6 @@ export class SupportMessage extends BaseEntity {
   @Column({ nullable: true })
   readAt: Date;
 
-  @ManyToOne(() => SupportRequest, (supportRequest) => supportRequest.messages)
-  supportRequest: SupportRequest;
+  @Column()
+  supportRequest: string;
 }

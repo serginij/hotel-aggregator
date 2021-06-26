@@ -1,13 +1,69 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { ID } from 'src/common/common.types';
+import { Emitter, EmitterEvents } from 'src/common/emitter/emitter';
+import {
+  TBaseMessageInfo,
+  TSendMessageData,
+} from '../interface/support-message.interface';
+import {
+  ISearchSupportRequestParams,
+  TBaseSupportRequestInfo,
+} from '../interface/support-request.interface';
+import { SupportMessageStore } from '../store/support-message.store';
+import { SupportRequestStore } from '../store/support-request.store';
 
 interface ISupportRequestService {
-  findSupportRequests(params: GetChatListParams): Promise<SupportRequest[]>;
-  sendMessage(data: SendMessageDto): Promise<Message>;
-  getMessages(supportRequest: ID): Promise<Message[]>;
+  findSupportRequests(
+    params: ISearchSupportRequestParams,
+  ): Promise<TBaseSupportRequestInfo[]>;
+  sendMessage(data: TSendMessageData): Promise<TBaseMessageInfo>;
+  getMessages(supportRequest: ID): Promise<TBaseMessageInfo[]>;
   subscribe(
-    handler: (supportRequest: SupportRequest, message: Message) => void,
-  ): () => void;
+    handler: (supportRequest: ID, message: TBaseMessageInfo) => void,
+  ): void;
 }
 
 @Injectable()
-export class SupportRequestService implements ISupportRequestService {}
+export class SupportRequestService implements ISupportRequestService {
+  constructor(
+    @InjectRepository(SupportRequestStore)
+    private readonly supportRequestStore: SupportRequestStore,
+    @InjectRepository(SupportMessageStore)
+    private readonly supportMessageStore: SupportMessageStore,
+  ) {}
+
+  findSupportRequests = async (params: ISearchSupportRequestParams) => {
+    const res = await this.supportRequestStore.findAllSupportRequests(params);
+
+    return res;
+  };
+
+  sendMessage = async (data: TSendMessageData) => {
+    const res = await this.supportMessageStore.createSupportMessage({
+      ...data,
+      author: data.author.toString(),
+    });
+
+    return res;
+  };
+
+  getMessages = async (supportRequest: ID) => {
+    const messages =
+      await this.supportMessageStore.findAllSupportRequestMessages({
+        supportRequest,
+      });
+
+    return messages;
+  };
+
+  subscribe = (
+    handler: (supportRequest: ID, message: TBaseMessageInfo) => void,
+  ) => {
+    Emitter.on(EmitterEvents.SEND_MESSAGE, (message: TBaseMessageInfo) => {
+      console.log('message from emitter', message);
+
+      handler(message.supportRequest, message);
+    });
+  };
+}

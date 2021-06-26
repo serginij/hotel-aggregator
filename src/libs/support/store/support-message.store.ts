@@ -1,34 +1,26 @@
-import {
-  EntityRepository,
-  Equal,
-  IsNull,
-  LessThanOrEqual,
-  Not,
-  Repository,
-} from 'typeorm';
-
+import { EntityRepository, Repository } from 'typeorm';
 import { SupportMessage } from '../model/support-message.model';
 
 import {
   IGetUnreadCount,
   IMarkMessagesAsRead,
-  SearchSupportMessageParams,
-  TCreateSupportMessageData,
+  SearchMessageParams,
+  TSendMessageData,
   TUpdateSupportMessageData,
 } from '../interface/support-message.interface';
 import { ID } from 'src/common/common.types';
 
 interface ISupportMessageStore {
   createSupportMessage: (
-    supportMessage: TCreateSupportMessageData,
+    message: TSendMessageData,
   ) => Promise<SupportMessage | undefined>;
   updateSupportMessage: (
     id: ID,
-    supportMessageDto: TUpdateSupportMessageData,
+    message: TUpdateSupportMessageData,
   ) => Promise<SupportMessage | undefined>;
   findSupportMessageById: (id: ID) => Promise<SupportMessage | undefined>;
-  findAllSupportMessages: (
-    params: SearchSupportMessageParams,
+  findAllSupportRequestMessages: (
+    params: SearchMessageParams,
   ) => Promise<SupportMessage[] | undefined>;
   markUserMessagesAsRead: (data: IMarkMessagesAsRead) => Promise<boolean>;
   markManagerMessagesAsRead: (data: IMarkMessagesAsRead) => Promise<boolean>;
@@ -43,10 +35,8 @@ export class SupportMessageStore
   extends Repository<SupportMessage>
   implements ISupportMessageStore
 {
-  createSupportMessage = async (
-    supportMessageDto: TCreateSupportMessageData,
-  ) => {
-    const supportMessage = SupportMessage.create(supportMessageDto);
+  createSupportMessage = async (message: TSendMessageData) => {
+    const supportMessage = SupportMessage.create(message);
 
     return await supportMessage.save();
   };
@@ -55,14 +45,13 @@ export class SupportMessageStore
     return await SupportMessage.findOne(id);
   };
 
-  findAllSupportMessages = async (params: SearchSupportMessageParams) => {
-    const { limit, offset, title } = params;
+  findAllSupportRequestMessages = async (params: SearchMessageParams) => {
+    const { text, supportRequest } = params;
 
     return await SupportMessage.find({
-      skip: offset,
-      take: limit,
       where: {
-        title: new RegExp(title),
+        text: new RegExp(text || ''),
+        supportRequest: { $eq: supportRequest.toString() },
       },
     });
   };
@@ -76,40 +65,40 @@ export class SupportMessageStore
     return supportMessage.raw;
   };
 
-  markUserMessagesAsRead = async (
+  markManagerMessagesAsRead = async (
     data: IMarkMessagesAsRead,
   ): Promise<boolean> => {
-    const { supportRequest, createdBefore, user } = data;
+    const { supportRequest, createdBefore, userId } = data;
 
     const now = Date.now();
 
     const res = await SupportMessage.update(
       {
-        author: user as string,
-        supportRequest: supportRequest as any,
-        sendAt: LessThanOrEqual(createdBefore),
-        readAt: IsNull(),
-      },
+        author: { $eq: userId.toString() },
+        supportRequest: { $eq: supportRequest.toString() },
+        readAt: null,
+        sentAt: { $lte: createdBefore },
+      } as any,
       { readAt: now },
     );
 
     return !!res;
   };
 
-  markManagerMessagesAsRead = async (
+  markUserMessagesAsRead = async (
     data: IMarkMessagesAsRead,
   ): Promise<boolean> => {
-    const { supportRequest, createdBefore, user } = data;
+    const { supportRequest, createdBefore, userId } = data;
 
     const now = Date.now();
 
     const res = await SupportMessage.update(
       {
-        author: Not(Equal(user as string)),
-        supportRequest: supportRequest as any,
-        sendAt: LessThanOrEqual(createdBefore),
-        readAt: IsNull(),
-      },
+        author: { $not: { $eq: userId.toString() } },
+        supportRequest: { $eq: supportRequest.toString() },
+        readAt: null,
+        sentAt: { $lte: createdBefore },
+      } as any,
       { readAt: now },
     );
 
@@ -117,18 +106,26 @@ export class SupportMessageStore
   };
 
   getUnreadUserMessages = async (params: IGetUnreadCount) => {
-    const { user, supportRequest } = params;
+    const { userId, supportRequest } = params;
 
     return await SupportMessage.find({
-      where: { author: Not(Equal(user)), supportRequest, readAt: IsNull() },
+      where: {
+        author: { $not: { $eq: userId.toString() } },
+        supportRequest: { $eq: supportRequest.toString() },
+        readAt: null,
+      },
     });
   };
 
   getUnreadManagerMessages = async (params: IGetUnreadCount) => {
-    const { user, supportRequest } = params;
+    const { userId, supportRequest } = params;
 
     return await SupportMessage.find({
-      where: { author: Equal(user), supportRequest, readAt: IsNull() },
+      where: {
+        author: { $not: { $eq: userId.toString() } },
+        supportRequest: { $eq: supportRequest.toString() },
+        readAt: null,
+      },
     });
   };
 }

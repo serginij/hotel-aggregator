@@ -3,9 +3,8 @@ import { EntityRepository, Repository } from 'typeorm';
 import { SupportRequest } from '../model/support-request.model';
 
 import {
-  SearchSupportRequestParams,
+  ISearchSupportRequestParams,
   TCreateSupportRequest,
-  TUpdateSupportRequestData,
 } from '../interface/support-request.interface';
 import { ID } from 'src/common/common.types';
 
@@ -13,13 +12,10 @@ interface ISupportRequestStore {
   createSupportRequest: (
     supportRequest: TCreateSupportRequest,
   ) => Promise<SupportRequest | undefined>;
-  updateSupportRequest: (
-    id: ID,
-    supportRequestDto: TUpdateSupportRequestData,
-  ) => Promise<SupportRequest | undefined>;
+
   findSupportRequestById: (id: ID) => Promise<SupportRequest | undefined>;
   findAllSupportRequests: (
-    params: SearchSupportRequestParams,
+    params: ISearchSupportRequestParams,
   ) => Promise<SupportRequest[] | undefined>;
   closeRequest: (id: ID) => Promise<SupportRequest>;
 }
@@ -39,25 +35,17 @@ export class SupportRequestStore
     return await SupportRequest.findOne(id);
   };
 
-  findAllSupportRequests = async (params: SearchSupportRequestParams) => {
-    const { limit, offset, title } = params;
+  findAllSupportRequests = async (params: ISearchSupportRequestParams) => {
+    const { limit, offset, isActive, userId } = params;
 
     return await SupportRequest.find({
       skip: offset,
       take: limit,
       where: {
-        title: new RegExp(title),
+        isActive: { $eq: isActive },
+        userId: { $eq: userId?.toString() },
       },
     });
-  };
-
-  updateSupportRequest = async (
-    id: ID,
-    supportRequestDto: TUpdateSupportRequestData,
-  ) => {
-    const supportRequest = await SupportRequest.update(id, supportRequestDto);
-
-    return supportRequest.raw;
   };
 
   closeRequest = async (id: ID) => {

@@ -6,6 +6,7 @@ import {
   IMarkMessagesAsRead,
 } from '../interface/support-message.interface';
 import {
+  ICheckUserAccess,
   TBaseSupportRequestInfo,
   TCreateSupportRequestData,
 } from '../interface/support-request.interface';
@@ -18,6 +19,7 @@ interface ISupportRequestClientService {
   ): Promise<TBaseSupportRequestInfo | null>;
   markMessagesAsRead(params: IMarkMessagesAsRead);
   getUnreadCount(params: IGetUnreadCount): Promise<number>;
+  checkUserAccess(params: ICheckUserAccess): Promise<boolean>;
 }
 
 @Injectable()
@@ -35,15 +37,16 @@ export class SupportRequestClientService
     const { text, userId } = data;
 
     const request = await this.supportRequestStore.createSupportRequest({
-      userId,
+      userId: userId.toString(),
+      isActive: true,
     });
 
     if (!request) return null;
 
-    const message = await this.supportMessageStore.createSupportMessage({
+    await this.supportMessageStore.createSupportMessage({
       text,
-      author: userId,
-      supportRequest: request,
+      author: userId.toString(),
+      supportRequest: request.id.toString(),
     });
 
     return request;
@@ -59,5 +62,13 @@ export class SupportRequestClientService
     const data = await this.supportMessageStore.getUnreadUserMessages(params);
 
     return data.length;
+  };
+
+  checkUserAccess = async (params: ICheckUserAccess) => {
+    const request = await this.supportRequestStore.findSupportRequestById(
+      params.supportRequest,
+    );
+
+    return request?.userId === params.userId.toString();
   };
 }

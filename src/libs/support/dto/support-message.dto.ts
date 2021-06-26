@@ -1,23 +1,11 @@
 import { Transform, Type } from 'class-transformer';
-import { IsDate, IsString } from 'class-validator';
+import { IsDate, IsOptional, IsString } from 'class-validator';
 import { ID } from 'src/common/common.types';
 
-export class UserMarkMessagesAsReadDto {
+export class MarkMessagesAsReadDto {
   @IsString()
-  supportRequest: ID;
-
-  @IsDate()
-  @Type(() => Date)
-  @Transform(({ value }) => new Date(value), { toClassOnly: true })
-  createdBefore: Date;
-}
-
-export class ManagerMarkMessagesAsReadDto {
-  @IsString()
-  user: ID;
-
-  @IsString()
-  supportRequest: ID;
+  @IsOptional()
+  user?: ID;
 
   @IsDate()
   @Type(() => Date)
@@ -33,4 +21,14 @@ export class GetUndsnreadCountDto {
 export class GetManagerUnreadCountDto extends GetUndsnreadCountDto {
   @IsString()
   user: ID;
+}
+
+export class SendMessageDto {
+  @IsString()
+  text: string;
+}
+
+export class SubscribeToChatDto {
+  @IsString()
+  chatId: string;
 }
