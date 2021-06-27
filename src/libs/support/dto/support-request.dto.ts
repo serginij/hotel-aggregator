@@ -8,7 +8,7 @@ export class CreateSupportRequestDto {
 
 export class SearchSupportRequestDto {
   @IsBoolean()
-  @Type(() => Boolean)
+  @Transform(({ value }) => JSON.parse(value), { toClassOnly: true })
   isActive: boolean;
 
   @IsInt()

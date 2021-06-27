@@ -17,7 +17,6 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { SupportRequestClientService } from '../core/support-request-client.service';
-import { SupportRequestEmployeeService } from '../core/support-request-employee.service';
 import { SupportRequestService } from '../core/support-request.service';
 import { SubscribeToChatDto } from '../dto/support-message.dto';
 import { TBaseMessageInfo } from '../interface/support-message.interface';
@@ -27,7 +26,6 @@ export class SupportRequestGateway {
   constructor(
     private readonly supportRequestService: SupportRequestService,
     private readonly supportRequestClientService: SupportRequestClientService,
-    private readonly supportRequestEmployeeService: SupportRequestEmployeeService,
   ) {}
 
   @WebSocketServer()
@@ -40,11 +38,8 @@ export class SupportRequestGateway {
   async subscribeToChat(@MessageBody() data: SubscribeToChatDto, @Req() req) {
     const user = req.user;
 
-    console.log(user);
-
     const { chatId } = data;
 
-    // TODO: check user aceess if ROLE === CLIENT
     if (user.role === RoleEnum.CLIENT) {
       const hasAccess = await this.supportRequestClientService.checkUserAccess({
         userId: user.id,

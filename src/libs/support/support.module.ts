@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SupportRequestController } from './controller/support-request.controller';
+import { SupportRequestGateway } from './controller/support-request.gateway';
 import { SupportRequestClientService } from './core/support-request-client.service';
 import { SupportRequestEmployeeService } from './core/support-request-employee.service';
 import { SupportRequestService } from './core/support-request.service';
@@ -22,6 +23,7 @@ import { SupportRequestStore } from './store/support-request.store';
     SupportRequestClientService,
     SupportRequestStore,
     SupportMessageStore,
+    SupportRequestGateway,
   ],
 })
 export class SupportModule {}

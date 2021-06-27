@@ -13,7 +13,6 @@ import {
   UseGuards,
   Get,
   Query,
-  Put,
   UsePipes,
 } from '@nestjs/common';
 import { RoleEnum } from 'src/common/common.types';
@@ -37,6 +36,7 @@ import { IMarkMessagesAsRead } from '../interface/support-message.interface';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('support-requests')
+@UsePipes(new ValidationPipe({ transform: true }))
 export class SupportRequestController {
   constructor(
     private readonly supportRequestService: SupportRequestService,
@@ -46,7 +46,6 @@ export class SupportRequestController {
 
   @Roles(RoleEnum.CLIENT)
   @Post()
-  @UsePipes(new ValidationPipe())
   async createSupportRequest(
     @Body() data: CreateSupportRequestDto,
     @Req() req,
@@ -68,7 +67,6 @@ export class SupportRequestController {
 
   @Roles(RoleEnum.CLIENT)
   @Get()
-  @UsePipes(new ValidationPipe({ transform: true }))
   async getSupportRequests(
     @Query() params: SearchSupportRequestDto,
     @Req() req,
@@ -82,20 +80,20 @@ export class SupportRequestController {
 
   @Roles(RoleEnum.MANAGER)
   @Get('/manager')
-  @UsePipes(new ValidationPipe({ transform: true }))
   async getSupportManagerRequests(@Query() params: SearchSupportRequestDto) {
-    return await this.supportRequestService.findSupportRequests(params);
+    return await this.supportRequestService.findSupportRequests({
+      ...params,
+      selectUser: true,
+    });
   }
 
   @Roles(RoleEnum.MANAGER, RoleEnum.CLIENT)
-  // @Roles(RoleEnum.CLIENT)
   @Get('/:id/messages')
   async getSupportRequestMessages(@Param('id') id, @Req() req) {
     const user = req.user;
 
     console.log(user);
 
-    // TODO: check user aceess if ROLE === CLIENT
     if (user.role === RoleEnum.CLIENT) {
       const hasAccess = await this.supportRequestClientService.checkUserAccess({
         userId: user.id,
@@ -111,9 +109,7 @@ export class SupportRequestController {
   }
 
   @Roles(RoleEnum.MANAGER, RoleEnum.CLIENT)
-  // @Roles(RoleEnum.CLIENT)
   @Post('/:id/messages')
-  @UsePipes(new ValidationPipe())
   async sendSupportRequestMessage(
     @Param('id') id,
     @Body() data: SendMessageDto,
@@ -128,12 +124,9 @@ export class SupportRequestController {
 
     return res;
   }
-  // REQUIRED
-  // READ MESSAGES - manager & client
+
   @Roles(RoleEnum.MANAGER, RoleEnum.CLIENT)
-  // @Roles(RoleEnum.CLIENT)
   @Post('/:id/messages/read')
-  @UsePipes(new ValidationPipe())
   async markMessagesAsRead(
     @Param('id') id,
     @Body() data: MarkMessagesAsReadDto,
@@ -158,9 +151,6 @@ export class SupportRequestController {
       });
     }
   }
-
-  // REQUIRED
-  // SUBSCRIBE TO CHAT - manager & client
 
   // GET UNREAD COUNT - manager & client
 

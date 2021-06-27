@@ -46,10 +46,10 @@ export class SupportRequestClientService
     await this.supportMessageStore.createSupportMessage({
       text,
       author: userId.toString(),
-      supportRequest: request.id.toString(),
+      supportRequest: request.id as any,
     });
 
-    return request;
+    return { ...request, hasNewMessages: false };
   };
 
   markMessagesAsRead = async (data: IMarkMessagesAsRead) => {

@@ -9,6 +9,7 @@ import {
   TUpdateSupportMessageData,
 } from '../interface/support-message.interface';
 import { ID } from 'src/common/common.types';
+import { ObjectId } from 'mongodb';
 
 interface ISupportMessageStore {
   createSupportMessage: (
@@ -36,7 +37,12 @@ export class SupportMessageStore
   implements ISupportMessageStore
 {
   createSupportMessage = async (message: TSendMessageData) => {
-    const supportMessage = SupportMessage.create(message);
+    const { text, author, supportRequest } = message;
+    const supportMessage = SupportMessage.create({
+      text,
+      author: ObjectId(author),
+      supportRequest: ObjectId(supportRequest),
+    });
 
     return await supportMessage.save();
   };

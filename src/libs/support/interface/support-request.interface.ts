@@ -6,12 +6,13 @@ export interface ISearchSupportRequestParams {
   isActive: boolean;
   limit: number;
   offset: number;
+  selectUser?: boolean;
 }
 
 export type TBaseSupportRequestInfo = Pick<
   SupportRequest,
   'id' | 'userId' | 'createdAt'
->;
+> & { hasNewMessages: boolean };
 
 export type TCreateSupportRequestData = Pick<SupportRequest, 'userId'> & {
   text: string;
