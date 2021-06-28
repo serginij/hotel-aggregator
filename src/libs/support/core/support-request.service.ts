@@ -41,12 +41,7 @@ export class SupportRequestService implements ISupportRequestService {
   };
 
   sendMessage = async (data: TSendMessageData) => {
-    const { author, supportRequest, text } = data;
-    const res = await this.supportMessageStore.createSupportMessage({
-      text,
-      author: author.toString(),
-      supportRequest,
-    });
+    const res = await this.supportMessageStore.createSupportMessage(data);
 
     return res;
   };
