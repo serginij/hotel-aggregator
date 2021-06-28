@@ -1,7 +1,6 @@
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import cookieParser from 'cookie-parser';
-import session from 'express-session';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -9,13 +8,6 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api/v1');
   app.use(cookieParser());
-  // app.use(
-  //   session({
-  //     secret: process.env.COOKIE_SECRET as string,
-  //     resave: false,
-  //     saveUninitialized: false,
-  //   }),
-  // );
 
   const logger = new Logger('Bootstrap');
 

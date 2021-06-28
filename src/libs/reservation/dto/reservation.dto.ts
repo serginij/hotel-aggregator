@@ -24,11 +24,11 @@ export class ReservationDto {
 export class SearchUserReservationDto implements SearchReservationParams {
   @IsDate()
   @Type(() => Date)
-  // @Transform(({ value }) => new Date(value), { toClassOnly: true })
+  @Transform(({ value }) => new Date(value), { toClassOnly: true })
   dateStart: Date;
 
   @IsDate()
   @Type(() => Date)
-  // @Transform(({ value }) => new Date(value), { toClassOnly: true })
+  @Transform(({ value }) => new Date(value), { toClassOnly: true })
   dateEnd: Date;
 }
