@@ -5,7 +5,7 @@ import { ID } from 'src/common/common.types';
 export class MarkMessagesAsReadDto {
   @IsString()
   @IsOptional()
-  user?: ID;
+  userId?: ID;
 
   @IsDate()
   @Type(() => Date)

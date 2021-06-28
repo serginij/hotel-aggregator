@@ -26,3 +26,16 @@ export interface ICheckUserAccess {
   userId: ID;
   supportRequest: ID;
 }
+
+export interface ISupportRequestInfo {
+  id: string;
+  createdAt: string;
+  isActive: boolean;
+  hasNewMessages: boolean;
+  client: {
+    id: string;
+    name: string;
+    email: string;
+    contactPhone: string;
+  };
+}

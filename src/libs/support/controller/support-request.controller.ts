@@ -92,8 +92,6 @@ export class SupportRequestController {
   async getSupportRequestMessages(@Param('id') id, @Req() req) {
     const user = req.user;
 
-    console.log(user);
-
     if (user.role === RoleEnum.CLIENT) {
       const hasAccess = await this.supportRequestClientService.checkUserAccess({
         userId: user.id,
@@ -135,24 +133,24 @@ export class SupportRequestController {
     const user = req.user;
     const isManager = user.role === RoleEnum.MANAGER;
 
-    if (isManager && !data.user)
+    if (isManager && !data.userId)
       throw new BadRequestException('No user ID was provided');
 
+    let res;
+
     if (isManager) {
-      return await this.supportRequestEmployeeService.markMessagesAsRead({
+      res = await this.supportRequestEmployeeService.markMessagesAsRead({
         ...data,
         supportRequest: id,
       } as IMarkMessagesAsRead);
     } else {
-      return await this.supportRequestClientService.markMessagesAsRead({
+      res = await this.supportRequestClientService.markMessagesAsRead({
         ...data,
         userId: user?.id,
         supportRequest: id,
       });
     }
+
+    return { success: res };
   }
-
-  // GET UNREAD COUNT - manager & client
-
-  // CLOSE REQUEST - manager
 }

@@ -28,3 +28,14 @@ export interface IGetUnreadCount {
   userId: ID;
   supportRequest: ID;
 }
+
+export interface ISupportRequestMessageData {
+  id: string;
+  sentAt: string;
+  text: string;
+  readAt?: string;
+  author: {
+    id: string;
+    name: string;
+  };
+}

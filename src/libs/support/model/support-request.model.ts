@@ -1,3 +1,4 @@
+import { ID } from 'src/common/common.types';
 import {
   Entity,
   Column,
@@ -13,7 +14,7 @@ export class SupportRequest extends BaseEntity {
   id: ObjectID;
 
   @Column()
-  userId: string;
+  userId: ID;
 
   @Column({ nullable: true, default: true })
   isActive?: boolean;

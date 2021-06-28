@@ -4,6 +4,7 @@ import { SupportRequest } from '../model/support-request.model';
 
 import {
   ISearchSupportRequestParams,
+  ISupportRequestInfo,
   TCreateSupportRequest,
 } from '../interface/support-request.interface';
 import { ID } from 'src/common/common.types';
@@ -16,7 +17,7 @@ interface ISupportRequestStore {
   findSupportRequestById: (id: ID) => Promise<SupportRequest | undefined>;
   findAllSupportRequests: (
     params: ISearchSupportRequestParams,
-  ) => Promise<SupportRequest[] | undefined>;
+  ) => Promise<ISupportRequestInfo[] | undefined>;
   closeRequest: (id: ID) => Promise<SupportRequest>;
 }
 

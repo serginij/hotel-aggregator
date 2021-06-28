@@ -3,12 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ID } from 'src/common/common.types';
 import { Emitter, EmitterEvents } from 'src/common/emitter/emitter';
 import {
+  ISupportRequestMessageData,
   TBaseMessageInfo,
   TSendMessageData,
 } from '../interface/support-message.interface';
 import {
   ISearchSupportRequestParams,
-  TBaseSupportRequestInfo,
+  ISupportRequestInfo,
 } from '../interface/support-request.interface';
 import { SupportMessageStore } from '../store/support-message.store';
 import { SupportRequestStore } from '../store/support-request.store';
@@ -16,9 +17,9 @@ import { SupportRequestStore } from '../store/support-request.store';
 interface ISupportRequestService {
   findSupportRequests(
     params: ISearchSupportRequestParams,
-  ): Promise<TBaseSupportRequestInfo[]>;
-  sendMessage(data: TSendMessageData): Promise<TBaseMessageInfo>;
-  getMessages(supportRequest: ID): Promise<TBaseMessageInfo[]>;
+  ): Promise<ISupportRequestInfo[]>;
+  sendMessage(data: TSendMessageData): Promise<ISupportRequestMessageData[]>;
+  getMessages(supportRequest: ID): Promise<ISupportRequestMessageData[]>;
   subscribe(
     handler: (supportRequest: ID, message: TBaseMessageInfo) => void,
   ): void;

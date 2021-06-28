@@ -1,9 +1,10 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { EntityRepository, getMongoManager, Repository } from 'typeorm';
 import { SupportMessage } from '../model/support-message.model';
 
 import {
   IGetUnreadCount,
   IMarkMessagesAsRead,
+  ISupportRequestMessageData,
   SearchMessageParams,
   TSendMessageData,
   TUpdateSupportMessageData,
@@ -14,7 +15,7 @@ import { ObjectId } from 'mongodb';
 interface ISupportMessageStore {
   createSupportMessage: (
     message: TSendMessageData,
-  ) => Promise<SupportMessage | undefined>;
+  ) => Promise<ISupportRequestMessageData[] | undefined>;
   updateSupportMessage: (
     id: ID,
     message: TUpdateSupportMessageData,
@@ -22,7 +23,7 @@ interface ISupportMessageStore {
   findSupportMessageById: (id: ID) => Promise<SupportMessage | undefined>;
   findAllSupportRequestMessages: (
     params: SearchMessageParams,
-  ) => Promise<SupportMessage[] | undefined>;
+  ) => Promise<ISupportRequestMessageData[] | undefined>;
   markUserMessagesAsRead: (data: IMarkMessagesAsRead) => Promise<boolean>;
   markManagerMessagesAsRead: (data: IMarkMessagesAsRead) => Promise<boolean>;
   getUnreadUserMessages: (params: IGetUnreadCount) => Promise<SupportMessage[]>;
@@ -44,7 +45,9 @@ export class SupportMessageStore
       supportRequest: ObjectId(supportRequest),
     });
 
-    return await supportMessage.save();
+    await supportMessage.save();
+
+    return await this.findAllSupportRequestMessages({ supportRequest });
   };
 
   findSupportMessageById = async (id: ID) => {
@@ -54,12 +57,42 @@ export class SupportMessageStore
   findAllSupportRequestMessages = async (params: SearchMessageParams) => {
     const { text, supportRequest } = params;
 
-    return await SupportMessage.find({
-      where: {
-        text: new RegExp(text || ''),
-        supportRequest: { $eq: supportRequest.toString() },
+    const res = getMongoManager().aggregate(SupportMessage, [
+      {
+        $match: {
+          text: new RegExp(text || ''),
+          supportRequest: { $eq: ObjectId(supportRequest) },
+        },
       },
-    });
+      {
+        $lookup: {
+          from: 'user',
+          localField: 'author',
+          foreignField: '_id',
+          as: 'client',
+        },
+      },
+      {
+        $project: {
+          id: 1,
+          sentAt: 1,
+          readAt: 1,
+          text: 1,
+          author: {
+            id: {
+              $arrayElemAt: ['$client._id', 0],
+            },
+            name: {
+              $arrayElemAt: ['$client.name', 0],
+            },
+          },
+        },
+      },
+    ]);
+
+    const data = await res.toArray();
+
+    return data;
   };
 
   updateSupportMessage = async (
@@ -76,12 +109,12 @@ export class SupportMessageStore
   ): Promise<boolean> => {
     const { supportRequest, createdBefore, userId } = data;
 
-    const now = Date.now();
+    const now = new Date();
 
     const res = await SupportMessage.update(
       {
-        author: { $eq: userId.toString() },
-        supportRequest: { $eq: supportRequest.toString() },
+        author: { $eq: ObjectId(userId) },
+        supportRequest: { $eq: ObjectId(supportRequest) },
         readAt: null,
         sentAt: { $lte: createdBefore },
       } as any,

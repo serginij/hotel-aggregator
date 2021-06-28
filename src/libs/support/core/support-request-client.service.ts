@@ -69,6 +69,6 @@ export class SupportRequestClientService
       params.supportRequest,
     );
 
-    return request?.userId === params.userId.toString();
+    return request?.userId.toString() === params.userId.toString();
   };
 }

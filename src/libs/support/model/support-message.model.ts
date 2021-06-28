@@ -1,3 +1,4 @@
+import { ID } from 'src/common/common.types';
 import {
   Entity,
   Column,
@@ -13,7 +14,7 @@ export class SupportMessage extends BaseEntity {
   id: ObjectID;
 
   @Column()
-  author: string;
+  author: ID;
 
   @CreateDateColumn()
   sentAt: Date;
@@ -21,9 +22,9 @@ export class SupportMessage extends BaseEntity {
   @Column()
   text: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, default: null })
   readAt: Date;
 
   @Column()
-  supportRequest: string;
+  supportRequest: ID;
 }
