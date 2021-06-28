@@ -37,7 +37,7 @@ export class SupportRequestClientService
     const { text, userId } = data;
 
     const request = await this.supportRequestStore.createSupportRequest({
-      userId: userId.toString(),
+      userId,
       isActive: true,
     });
 
@@ -45,7 +45,7 @@ export class SupportRequestClientService
 
     await this.supportMessageStore.createSupportMessage({
       text,
-      author: userId.toString(),
+      author: userId,
       supportRequest: request.id as any,
     });
 
