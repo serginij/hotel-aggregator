@@ -7,7 +7,6 @@ import {
   TCreateSupportRequest,
 } from '../interface/support-request.interface';
 import { ID } from 'src/common/common.types';
-import { SupportMessage } from '../model/support-message.model';
 
 interface ISupportRequestStore {
   createSupportRequest: (
@@ -41,16 +40,27 @@ export class SupportRequestStore
 
     const mongoManager = getMongoManager();
 
-    console.log(params);
-
-    const userLookup = selectUser ? {} : {};
     const clientField = selectUser
       ? {
-          client: { $arrayElemAt: ['$client', 0] },
+          client: {
+            $let: {
+              vars: {
+                fUser: {
+                  $arrayElemAt: ['$client', 0],
+                },
+              },
+              in: {
+                id: '$$fUser.id',
+                name: '$$fUser.name',
+                email: '$$fUser.email',
+                contactPhone: '$$fUser.contactPhone',
+              },
+            },
+          },
         }
       : {};
 
-    const userIdMatch = userId ? { userId: { $eq: userId.toString() } } : {};
+    const userIdMatch = userId ? { userId: { $eq: userId } } : {};
 
     const result = mongoManager
       .aggregate(SupportRequest, [
@@ -58,7 +68,6 @@ export class SupportRequestStore
           $match: {
             isActive: { $eq: isActive },
             ...userIdMatch,
-            // userId: userId ? { $eq: userId.toString() } : undefined,
           },
         },
         {
@@ -87,8 +96,8 @@ export class SupportRequestStore
                 $size: '$messages',
               },
             },
-            client: 1,
-            // ...clientField,
+
+            ...clientField,
           },
         },
       ])
@@ -97,18 +106,7 @@ export class SupportRequestStore
 
     const data = await result.toArray();
 
-    console.log(data);
-
-    return data as any;
-
-    // return await SupportRequest.find({
-    //   skip: offset,
-    //   take: limit,
-    //   where: {
-    //     isActive: { $eq: isActive },
-    //     userId: { $eq: userId?.toString() },
-    //   },
-    // });
+    return data;
   };
 
   closeRequest = async (id: ID) => {
