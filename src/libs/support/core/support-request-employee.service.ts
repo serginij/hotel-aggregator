@@ -25,12 +25,14 @@ export class SupportRequestEmployeeService
     private readonly supportMessageStore: SupportMessageStore,
   ) {}
 
+  // Marks all messages from CLIENT as read
   markMessagesAsRead = async (data: IMarkMessagesAsRead) => {
     const res = await this.supportMessageStore.markManagerMessagesAsRead(data);
 
     return res;
   };
 
+  // Returns unread CLIENT messages count
   getUnreadCount = async (params: IGetUnreadCount) => {
     const data = await this.supportMessageStore.getUnreadManagerMessages(
       params,
@@ -39,6 +41,7 @@ export class SupportRequestEmployeeService
     return data.length;
   };
 
+  // Closes support request
   closeRequest = async (request: ID) => {
     const res = await this.supportRequestStore.closeRequest(request);
 

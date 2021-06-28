@@ -34,18 +34,21 @@ export class SupportRequestService implements ISupportRequestService {
     private readonly supportMessageStore: SupportMessageStore,
   ) {}
 
+  // Get all support requests by filters
   findSupportRequests = async (params: ISearchSupportRequestParams) => {
     const res = await this.supportRequestStore.findAllSupportRequests(params);
 
     return res;
   };
 
+  // Send message to specific support request
   sendMessage = async (data: TSendMessageData) => {
     const res = await this.supportMessageStore.createSupportMessage(data);
 
     return res;
   };
 
+  // Get all messages from support request
   getMessages = async (supportRequest: ID) => {
     const messages =
       await this.supportMessageStore.findAllSupportRequestMessages({
@@ -55,6 +58,7 @@ export class SupportRequestService implements ISupportRequestService {
     return messages;
   };
 
+  // Subscribes to support request messages
   subscribe = (
     handler: (supportRequest: ID, message: TBaseMessageInfo) => void,
   ) => {

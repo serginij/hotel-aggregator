@@ -33,6 +33,7 @@ export class SupportRequestClientService
     private readonly supportMessageStore: SupportMessageStore,
   ) {}
 
+  // Create support request & send message to created request
   createSupportRequest = async (data: TCreateSupportRequestData) => {
     const { text, userId } = data;
 
@@ -52,18 +53,21 @@ export class SupportRequestClientService
     return { ...request, hasNewMessages: false };
   };
 
+  // Mark all MANAGER messages as read in specific support request
   markMessagesAsRead = async (data: IMarkMessagesAsRead) => {
     const res = await this.supportMessageStore.markUserMessagesAsRead(data);
 
     return res;
   };
 
+  // Mark unread messages from MANAGER  in specific support request
   getUnreadCount = async (params: IGetUnreadCount) => {
     const data = await this.supportMessageStore.getUnreadUserMessages(params);
 
     return data.length;
   };
 
+  // Check CLIENT access to support request
   checkUserAccess = async (params: ICheckUserAccess) => {
     const request = await this.supportRequestStore.findSupportRequestById(
       params.supportRequest,

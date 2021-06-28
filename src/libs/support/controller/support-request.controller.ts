@@ -44,6 +44,7 @@ export class SupportRequestController {
     private readonly supportRequestEmployeeService: SupportRequestEmployeeService,
   ) {}
 
+  // POST /api/v1/support-requests
   @Roles(RoleEnum.CLIENT)
   @Post()
   async createSupportRequest(
@@ -65,6 +66,7 @@ export class SupportRequestController {
     return supportRequest;
   }
 
+  // GET /api/v1/support-requests
   @Roles(RoleEnum.CLIENT)
   @Get()
   async getSupportRequests(
@@ -78,6 +80,7 @@ export class SupportRequestController {
     });
   }
 
+  // GET /api/v1/support-requests/manager
   @Roles(RoleEnum.MANAGER)
   @Get('/manager')
   async getSupportManagerRequests(@Query() params: SearchSupportRequestDto) {
@@ -87,11 +90,13 @@ export class SupportRequestController {
     });
   }
 
+  // GET /api/v1/support-requests/:id/messages
   @Roles(RoleEnum.MANAGER, RoleEnum.CLIENT)
   @Get('/:id/messages')
   async getSupportRequestMessages(@Param('id') id, @Req() req) {
     const user = req.user;
 
+    // Check CLIENT access
     if (user.role === RoleEnum.CLIENT) {
       const hasAccess = await this.supportRequestClientService.checkUserAccess({
         userId: user.id,
@@ -106,6 +111,7 @@ export class SupportRequestController {
     return res;
   }
 
+  // POST /api/v1/support-requests/:id/messages
   @Roles(RoleEnum.MANAGER, RoleEnum.CLIENT)
   @Post('/:id/messages')
   async sendSupportRequestMessage(
@@ -123,6 +129,7 @@ export class SupportRequestController {
     return res;
   }
 
+  // POST /api/v1/support-requests/:id/messages/read
   @Roles(RoleEnum.MANAGER, RoleEnum.CLIENT)
   @Post('/:id/messages/read')
   async markMessagesAsRead(
