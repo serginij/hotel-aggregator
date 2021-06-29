@@ -47,7 +47,14 @@ export class ReservationService implements IReservationService {
   create = async (reservation: CreateUserReservationData) => {
     const { hotelId, roomId, dateEnd, dateStart } = reservation;
 
-    if (!this.checkIfReservationEmpty({ hotelId, roomId, dateStart, dateEnd }))
+    if (
+      !(await this.checkIfReservationEmpty({
+        hotelId,
+        roomId,
+        dateStart,
+        dateEnd,
+      }))
+    )
       throw new BadRequestException('Reservation is already exists');
 
     const res = await this.reservationStore.createReservation(reservation);
@@ -89,7 +96,7 @@ export class ReservationService implements IReservationService {
     const reservation = await this.reservationStore.findById(id);
 
     if (reservation?.userId !== userId)
-      throw new BadRequestException('Incorrect userId'); // throw an erro r
+      throw new BadRequestException('Incorrect userId');
 
     const res = await this.reservationStore.removeReservation(id);
 

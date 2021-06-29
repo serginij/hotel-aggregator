@@ -36,6 +36,7 @@ export class ReservationController {
     private readonly hotelRoomService: HotelRoomService,
   ) {}
 
+  // POST /api/v1/reservations
   @Roles(RoleEnum.CLIENT)
   @Post()
   @UsePipes(new ValidationPipe({ transform: true }))
@@ -59,13 +60,12 @@ export class ReservationController {
     return reservation;
   }
 
+  // GET /api/v1/reservations
   @Roles(RoleEnum.CLIENT)
   @Get()
-  // TODO: fix date transform
   @UsePipes(
     new ValidationPipe({
       transform: true,
-      transformOptions: { enableImplicitConversion: true },
     }),
   )
   async getReservations(@Req() req, @Query() params: SearchUserReservationDto) {
@@ -76,6 +76,7 @@ export class ReservationController {
     });
   }
 
+  // DELETE /api/v1/reservations/:id
   @Roles(RoleEnum.CLIENT)
   @Delete('/:id')
   async updateReservations(@Param('id') id: string, @Req() req) {
@@ -83,12 +84,14 @@ export class ReservationController {
     return await this.reservationService.deleteReservation(id, userId);
   }
 
+  // GET /api/v1/reservations/:userId
   @Roles(RoleEnum.MANAGER)
   @Get('/:userId')
   async getUserReservations(@Param('userId') userId: ID) {
     return await this.reservationService.findAllReservations({ userId });
   }
 
+  // DELETE /api/v1/reservations/:userId/:reservationId
   @Roles(RoleEnum.MANAGER)
   @Delete('/:userId/:reservationId')
   async deleteUserReservation(
