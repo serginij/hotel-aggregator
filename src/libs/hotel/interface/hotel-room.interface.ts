@@ -14,7 +14,7 @@ export type TBaseHotelRoomInfo = Pick<
 
 export type TCreateHotelRoomData = Pick<
   HotelRoom,
-  'hotel' | 'description' | 'images'
+  'hotel' | 'description' | 'images' | 'title'
 >;
 
 export type TUpdateHotelRoomData = Partial<

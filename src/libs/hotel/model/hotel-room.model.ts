@@ -6,7 +6,6 @@ import {
   ObjectID,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToOne,
 } from 'typeorm';
 import { Hotel } from './hotel.model';
 
@@ -15,7 +14,7 @@ export class HotelRoom extends BaseEntity {
   @ObjectIdColumn()
   id: ObjectID;
 
-  @ManyToOne(() => Hotel, (hotel) => hotel.rooms)
+  @Column()
   hotel: Hotel;
 
   @Column()

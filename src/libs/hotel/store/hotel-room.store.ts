@@ -42,7 +42,17 @@ export class HotelRoomStore
   };
 
   findHotelRoomById = async (id: ID) => {
-    return await HotelRoom.findOne(id);
+    return await HotelRoom.findOne(id, {
+      select: [
+        'id',
+        'title',
+        'description',
+        'images',
+        'hotel.id',
+        'hotel.title',
+        'hotel.description',
+      ] as any,
+    });
   };
 
   findAllHotelRooms = async (params: SearchHotelRoomParams) => {
@@ -53,8 +63,9 @@ export class HotelRoomStore
       take: limit,
       where: {
         title: new RegExp(title),
-        isEnabled,
+        isEnabled: { $eq: isEnabled },
       },
+      select: ['id', 'title', 'images', 'hotel.id', 'hotel.title'] as any,
     });
   };
 }

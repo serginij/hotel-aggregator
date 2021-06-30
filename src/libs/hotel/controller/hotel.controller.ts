@@ -17,17 +17,16 @@ import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 
 import { HotelService } from '../core/hotel.service';
-import { HotelDto } from '../dto/hotel.dto';
-import { SearchHotelParams } from '../interface/hotel.interface';
+import { HotelDto, SearchHotelDto } from '../dto/hotel.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('hotels')
+@UsePipes(new ValidationPipe({ transform: true }))
 export class HotelController {
   constructor(private readonly hotelService: HotelService) {}
 
   @Roles(RoleEnum.ADMIN)
   @Post()
-  @UsePipes(new ValidationPipe())
   async createHotel(@Body() data: HotelDto) {
     const hotel = await this.hotelService.create(data);
 
@@ -41,14 +40,12 @@ export class HotelController {
 
   @Roles(RoleEnum.ADMIN)
   @Get()
-  @UsePipes(new ValidationPipe())
-  async getHotels(@Query() params: SearchHotelParams) {
+  async getHotels(@Query() params: SearchHotelDto) {
     return await this.hotelService.findAll(params);
   }
 
   @Roles(RoleEnum.ADMIN)
   @Put('/:id')
-  @UsePipes(new ValidationPipe())
   async updateHotels(@Param('id') id: string, @Body() data: HotelDto) {
     return await this.hotelService.update(id, data);
   }

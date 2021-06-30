@@ -29,8 +29,11 @@ import {
 } from 'src/common/util/image-file-filter';
 
 import { HotelRoomService } from '../core/hotel-room.service';
-import { HotelRoomDto, UpdateHotelRoomDto } from '../dto/hotel-room.dto';
-import { SearchHotelRoomParams } from '../interface/hotel-room.interface';
+import {
+  HotelRoomDto,
+  SearchHotelRoomDto,
+  UpdateHotelRoomDto,
+} from '../dto/hotel-room.dto';
 
 const fileInterceptor = FilesInterceptor('files', 5, {
   fileFilter: imageFileFilter,
@@ -89,8 +92,8 @@ export class HotelRoomController {
   }
 
   @Get()
-  @UsePipes(new ValidationPipe())
-  async getHotelRooms(@Query() params: SearchHotelRoomParams) {
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async getHotelRooms(@Query() params: SearchHotelRoomDto) {
     return await this.hotelRoomService.findAll(params);
   }
 
