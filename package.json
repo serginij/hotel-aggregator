@@ -80,8 +80,7 @@
     ],
     "preset": "ts-jest",
     "roots": [
-      "<rootDir>/src",
-      "<rootDir>/test"
+      "<rootDir>/src"
     ],
     "moduleDirectories": [
       "node_modules",
@@ -94,8 +93,7 @@
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
     "moduleNameMapper": {
-      "^src/(.*)$": "<rootDir>/src/$1",
-      "^test/(.*)$": "<rootDir>/test/$1"
+      "^src/(.*)$": "<rootDir>/src/$1"
     }
   }
 }

@@ -1,10 +1,10 @@
 import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { ID } from 'src/common/common.types';
-import { Emitter, EmitterEvents } from 'src/common/emitter/emitter';
+
 import {
   CreateUserReservationData,
   SearchReservationParams,
+  SearchUserReservationParams,
 } from '../interface/reservation.interface';
 
 import { ReservationStore } from '../store/reservation.store';
@@ -20,7 +20,7 @@ describe('BookService', () => {
     createReservation: ({ hotelId }: CreateUserReservationData) =>
       hotelId === '345' ? true : false,
     findById: (id) => (id === '123' ? { userId: '123' } : {}),
-    removeReservation: () => true,
+    removeReservation: (id: string) => (id === '123' ? true : false),
   });
 
   beforeEach(async () => {
@@ -77,103 +77,90 @@ describe('BookService', () => {
     });
   });
 
-  it('should return all support requests based on props & call findAllSupportRequests', async () => {
-    // const mockData: ISearchSupportRequestParams = {
-    //   isActive: false,
-    //   limit: 1,
-    //   offset: 0,
-    // };
-    // const result = [];
-    // expect(
-    //   await supportRequestService.findSupportRequests(mockData),
-    // ).toStrictEqual(result);
-  });
-
   describe('deleteReservation', () => {
-    it('should return all messages', async () => {
-      // const mockData: ID = '123';
-      // const result = [];
-      // expect(await supportRequestService.getMessages(mockData)).toStrictEqual(
-      //   result,
-      // );
+    it('should delete resevation', async () => {
+      const mockData = {
+        id: '123',
+        userId: '123',
+      };
+      const result = true;
+
+      expect(
+        await reservationService.deleteReservation(
+          mockData.id,
+          mockData.userId,
+        ),
+      ).toBe(result);
+    });
+
+    it('should throw an exception', async () => {
+      const mockData = {
+        id: '555',
+        userId: '123',
+      };
+
+      await expect(
+        reservationService.deleteReservation(mockData.id, mockData.userId),
+      ).rejects.toThrow();
     });
   });
 
   describe('findAllUserReservations', () => {
     it('should return all messages', async () => {
-      // const mockData: TSendMessageData = {
-      //   author: '124',
-      //   text: 'hello world',
-      //   supportRequest: '22223',
-      // };
-      // const result = [
-      //   {
-      //     author: '124',
-      //     text: 'hello world',
-      //     supportRequest: '22223',
-      //   },
-      // ];
-      // expect(await supportRequestService.sendMessage(mockData)).toStrictEqual(
-      //   result,
-      // );
+      const mockData: SearchUserReservationParams = {
+        userId: '',
+        dateEnd: new Date(),
+        dateStart: new Date(),
+      };
+      const result = [];
+
+      expect(
+        await reservationService.findAllUserReservations(mockData),
+      ).toStrictEqual(result);
     });
   });
 
   describe('findAllReservations', () => {
     it('should subscribe to messages', async () => {
-      // const mockData: TSendMessageData = {
-      //   author: '124',
-      //   text: 'hello world',
-      //   supportRequest: '22223',
-      // };
-      // const result = [
-      //   {
-      //     author: '124',
-      //     text: 'hello world',
-      //     supportRequest: '22223',
-      //   },
-      // ];
-      // expect(await supportRequestService.sendMessage(mockData)).toStrictEqual(
-      //   result,
-      // );
+      const mockData: SearchReservationParams = {
+        userId: '',
+        dateEnd: new Date(),
+        dateStart: new Date(),
+        hotelId: '123',
+      };
+      const result = [{}];
+
+      expect(
+        await reservationService.findAllReservations(mockData),
+      ).toStrictEqual(result);
     });
   });
 
   describe('deleteUserReservation', () => {
-    it('should delete reservation', async () => {
-      // const mockData: TSendMessageData = {
-      //   author: '124',
-      //   text: 'hello world',
-      //   supportRequest: '22223',
-      // };
-      // const result = [
-      //   {
-      //     author: '124',
-      //     text: 'hello world',
-      //     supportRequest: '22223',
-      //   },
-      // ];
-      // expect(await supportRequestService.sendMessage(mockData)).toStrictEqual(
-      //   result,
-      // );
+    it('should delete resevation', async () => {
+      const mockData = {
+        id: '123',
+        userId: '123',
+      };
+      const result = true;
+
+      expect(
+        await reservationService.deleteUserReservation(
+          mockData.id,
+          mockData.userId,
+        ),
+      ).toBe(result);
     });
 
     it('should throw an exception', async () => {
-      // const mockData: TSendMessageData = {
-      //   author: '124',
-      //   text: 'hello world',
-      //   supportRequest: '22223',
-      // };
-      // const result = [
-      //   {
-      //     author: '124',
-      //     text: 'hello world',
-      //     supportRequest: '22223',
-      //   },
-      // ];
-      // expect(await supportRequestService.sendMessage(mockData)).toStrictEqual(
-      //   result,
-      // );
+      const mockData = {
+        id: '555',
+        userId: '123',
+      };
+
+      await expect(
+        reservationService.deleteUserReservation(mockData.id, mockData.userId),
+      ).rejects.toThrow();
     });
   });
 });
