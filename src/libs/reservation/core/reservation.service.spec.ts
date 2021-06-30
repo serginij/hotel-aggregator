@@ -11,7 +11,7 @@ import { ReservationStore } from '../store/reservation.store';
 
 import { ReservationService } from './reservation.service';
 
-describe('BookService', () => {
+describe('ReservationService', () => {
   let reservationService: ReservationService;
 
   const MockModel = () => ({

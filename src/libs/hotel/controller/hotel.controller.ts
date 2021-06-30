@@ -25,6 +25,7 @@ import { HotelDto, SearchHotelDto } from '../dto/hotel.dto';
 export class HotelController {
   constructor(private readonly hotelService: HotelService) {}
 
+  // POST /api/v1/hotels
   @Roles(RoleEnum.ADMIN)
   @Post()
   async createHotel(@Body() data: HotelDto) {
@@ -38,12 +39,14 @@ export class HotelController {
     return hotel;
   }
 
+  // GET /api/v1/hotels
   @Roles(RoleEnum.ADMIN)
   @Get()
   async getHotels(@Query() params: SearchHotelDto) {
     return await this.hotelService.findAll(params);
   }
 
+  // PUT /api/v1/hotels/:id
   @Roles(RoleEnum.ADMIN)
   @Put('/:id')
   async updateHotels(@Param('id') id: string, @Body() data: HotelDto) {

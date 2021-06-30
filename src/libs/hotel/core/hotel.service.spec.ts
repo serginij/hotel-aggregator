@@ -12,7 +12,7 @@ import { HotelStore } from '../store/hotel.store';
 
 import { HotelService } from './hotel.service';
 
-describe('BookService', () => {
+describe('HotelService', () => {
   let hotelService: HotelService;
 
   const MockModel = () => ({

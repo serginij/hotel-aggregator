@@ -49,6 +49,7 @@ export class HotelRoomController {
     return files.map(({ filename }) => filename);
   };
 
+  // POST ADMIN /api/v1/hotel-rooms
   @Roles(RoleEnum.ADMIN)
   @Post()
   @UseInterceptors(fileInterceptor)
@@ -74,6 +75,7 @@ export class HotelRoomController {
     return hotelRoom;
   }
 
+  // PUT ADMIN /api/v1/hotel-rooms/:id
   @Roles(RoleEnum.ADMIN)
   @Put('/:id')
   @UsePipes(new ValidationPipe())
@@ -91,12 +93,14 @@ export class HotelRoomController {
     return await this.hotelRoomService.update(id, { ...data, images });
   }
 
+  // GET /api/v1/hotel-rooms
   @Get()
   @UsePipes(new ValidationPipe({ transform: true }))
   async getHotelRooms(@Query() params: SearchHotelRoomDto) {
     return await this.hotelRoomService.findAll(params);
   }
 
+  // GET /api/v1/hotel-rooms/:id
   @Get('/:id')
   async getHotelRoomById(@Param('id') id: string) {
     return await this.hotelRoomService.findById(id);

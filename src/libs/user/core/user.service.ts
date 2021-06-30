@@ -27,6 +27,7 @@ export class UserService implements IUserService {
     private readonly bcryptService: BcryptService,
   ) {}
 
+  // Create user if given email does not exists
   create = async (user: UserDto) => {
     const { password, role, ...userData } = user;
 
@@ -45,6 +46,7 @@ export class UserService implements IUserService {
     });
   };
 
+  // Find user by id
   findById = async (id: string) => {
     const user = await this.userStore.findUserById(id);
 
@@ -57,6 +59,7 @@ export class UserService implements IUserService {
     return null;
   };
 
+  // Find user by email
   findByEmail = async <B extends boolean>(
     email: string,
     options?: { fullModel: B },
@@ -74,6 +77,7 @@ export class UserService implements IUserService {
     return null;
   };
 
+  // Find all users
   findAll = async (params: SearchUserParams) => {
     const users = await this.userStore.findAllUsers(params);
 

@@ -14,7 +14,7 @@ import { SupportMessageStore } from '../store/support-message.store';
 import { SupportRequestStore } from '../store/support-request.store';
 import { SupportRequestClientService } from './support-request-client.service';
 
-describe('BookService', () => {
+describe('SupportRequestClientService', () => {
   let supportRequestClientService: SupportRequestClientService;
 
   const MockRequestModel = () => ({

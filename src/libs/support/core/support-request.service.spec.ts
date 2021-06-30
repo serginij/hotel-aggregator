@@ -10,7 +10,7 @@ import { SupportRequestStore } from '../store/support-request.store';
 
 import { SupportRequestService } from './support-request.service';
 
-describe('BookService', () => {
+describe('SupportRequestService', () => {
   let supportRequestService: SupportRequestService;
 
   const MockRequestModel = () => ({
