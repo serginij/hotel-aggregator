@@ -17,6 +17,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
+  // Validates user email & password
   validateUser = async (email: string, pass: string) => {
     const user = await this.userService.findByEmail(email, { fullModel: true });
 
@@ -32,6 +33,7 @@ export class AuthService {
     return null;
   };
 
+  // Register new user
   register = async (userDto: CreateUserDto) => {
     const user = await this.userService.create({
       ...userDto,
@@ -43,6 +45,7 @@ export class AuthService {
     return user;
   };
 
+  // Generates JWT token with user info
   private generateToken = ({ email, name, contactPhone, role }: UserDto) => {
     const user: IJwtPayload = {
       email,
@@ -59,6 +62,7 @@ export class AuthService {
     };
   };
 
+  // Login user
   login = async (loginDto: LoginUserDto) => {
     const { email, password } = loginDto;
     const user = await this.validateUser(email, password);

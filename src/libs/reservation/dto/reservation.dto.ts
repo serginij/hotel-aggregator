@@ -1,14 +1,15 @@
 import { Transform, Type } from 'class-transformer';
-import { IsDate, IsDateString, IsString } from 'class-validator';
+import { IsDate, IsString } from 'class-validator';
+import { ID } from 'src/common/common.types';
 
 import { SearchReservationParams } from '../interface/reservation.interface';
 
 export class ReservationDto {
   @IsString()
-  hotelId: string;
+  hotelId: ID;
 
   @IsString()
-  roomId: string;
+  roomId: ID;
 
   @IsDate()
   @Type(() => Date)
@@ -22,13 +23,9 @@ export class ReservationDto {
 }
 
 export class SearchUserReservationDto implements SearchReservationParams {
-  @IsDate()
-  @Type(() => Date)
-  @Transform(({ value }) => new Date(value), { toClassOnly: true })
+  @Type(() => String)
   dateStart: Date;
 
-  @IsDate()
-  @Type(() => Date)
-  @Transform(({ value }) => new Date(value), { toClassOnly: true })
+  @Type(() => String)
   dateEnd: Date;
 }

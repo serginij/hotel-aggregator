@@ -50,6 +50,7 @@ export class SearchHotelRoomDto implements SearchHotelRoomParams {
   offset: number;
 
   @IsString()
+  @IsOptional()
   title: string;
 
   @IsBoolean()

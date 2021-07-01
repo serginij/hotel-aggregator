@@ -33,6 +33,7 @@ export class ReservationService implements IReservationService {
     private readonly reservationStore: ReservationStore,
   ) {}
 
+  // Checks if reservation is empty
   private checkIfReservationEmpty = async (params: {
     hotelId: ID;
     roomId: ID;
@@ -44,10 +45,18 @@ export class ReservationService implements IReservationService {
     return isExists.length === 0;
   };
 
+  // Create new reservation if reservation is empty
   create = async (reservation: CreateUserReservationData) => {
     const { hotelId, roomId, dateEnd, dateStart } = reservation;
 
-    if (!this.checkIfReservationEmpty({ hotelId, roomId, dateStart, dateEnd }))
+    if (
+      !(await this.checkIfReservationEmpty({
+        hotelId,
+        roomId,
+        dateStart,
+        dateEnd,
+      }))
+    )
       throw new BadRequestException('Reservation is already exists');
 
     const res = await this.reservationStore.createReservation(reservation);
@@ -57,10 +66,11 @@ export class ReservationService implements IReservationService {
     return res;
   };
 
+  // Delete reservation based on userId
   deleteReservation = async (id: string, userId: ID) => {
     const reservation = await this.reservationStore.findById(id);
 
-    if (reservation?.userId !== userId) throw new ForbiddenException(); // throw an erro r
+    if (reservation?.userId !== userId) throw new ForbiddenException();
 
     const res = await this.reservationStore.removeReservation(id);
 
@@ -69,6 +79,7 @@ export class ReservationService implements IReservationService {
     return res;
   };
 
+  // Find add CLIENT reservations
   findAllUserReservations = async (params: SearchUserReservationParams) => {
     const reservations = await this.reservationStore.findAllReservations(
       params,
@@ -77,6 +88,7 @@ export class ReservationService implements IReservationService {
     return reservations;
   };
 
+  // Find all reservations
   findAllReservations = async (params: SearchReservationParams) => {
     const reservations = await this.reservationStore.findAllReservations(
       params,
@@ -85,11 +97,12 @@ export class ReservationService implements IReservationService {
     return reservations;
   };
 
+  // delete reservation based on userId
   deleteUserReservation = async (id: string, userId: ID) => {
     const reservation = await this.reservationStore.findById(id);
 
     if (reservation?.userId !== userId)
-      throw new BadRequestException('Incorrect userId'); // throw an erro r
+      throw new BadRequestException('Incorrect userId');
 
     const res = await this.reservationStore.removeReservation(id);
 

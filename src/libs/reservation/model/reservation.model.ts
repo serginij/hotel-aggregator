@@ -1,3 +1,4 @@
+import { ID } from 'src/common/common.types';
 import { Entity, Column, BaseEntity, ObjectIdColumn, ObjectID } from 'typeorm';
 
 @Entity()
@@ -5,15 +6,14 @@ export class Reservation extends BaseEntity {
   @ObjectIdColumn()
   id: ObjectID;
 
-  // TODO: add link to models
   @Column()
-  userId: string;
+  userId: ID;
 
   @Column()
-  hotelId: string;
+  hotelId: ID;
 
   @Column()
-  roomId: string;
+  roomId: ID;
 
   @Column()
   dateStart: Date;

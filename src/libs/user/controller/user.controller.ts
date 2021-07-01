@@ -21,12 +21,13 @@ import { SearchUserQuery, UserDto } from '../dto/user.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('users')
+@UsePipes(new ValidationPipe({ transform: true }))
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  // POST ADMIN /api/v1/users
   @Roles(RoleEnum.ADMIN)
-  @Post('admin')
-  @UsePipes(new ValidationPipe())
+  @Post()
   async createUser(@Body() data: UserDto) {
     const user = await this.userService.create(data);
 
@@ -41,17 +42,10 @@ export class UserController {
     return user;
   }
 
-  @Roles(RoleEnum.ADMIN)
-  @Get('admin')
-  @UsePipes(new ValidationPipe({ transform: true }))
+  // GET ADMIN MANAGER /api/v1/users
+  @Roles(RoleEnum.ADMIN, RoleEnum.MANAGER)
+  @Get()
   async getAdminUsers(@Query() params: SearchUserQuery) {
-    return await this.userService.findAll(params);
-  }
-
-  @Roles(RoleEnum.MANAGER)
-  @Get('manager')
-  @UsePipes(new ValidationPipe())
-  async getUsers(@Query() params: SearchUserQuery) {
     return await this.userService.findAll(params);
   }
 }

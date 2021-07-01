@@ -24,6 +24,7 @@ export class AuthController {
     return 'Hello world';
   }
 
+  // GET /api/v1/auth/me
   @Get('me')
   @UseGuards(JwtAuthGuard)
   async getMe(@Req() req: any) {
@@ -31,7 +32,7 @@ export class AuthController {
     return req.user;
   }
 
-  // TODO: add cookie to response, check why res is empty
+  // POST /api/v1/auth/login
   @Post('login')
   async login(@Body() loginUserDto: LoginUserDto, @Res() response: Response) {
     const res = await this.authService.login(loginUserDto);
@@ -45,6 +46,7 @@ export class AuthController {
     response.status(200).json(res);
   }
 
+  // POST /api/v1/auth/register
   @Post('register')
   async register(@Body() registerUserDto: CreateUserDto) {
     const res = await this.authService.register(registerUserDto);
