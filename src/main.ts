@@ -14,8 +14,8 @@ async function bootstrap() {
   await app.listen(process.env.PORT || 3000, () => {
     logger.log(
       `Server started in ENV: ${
-        process.env.NODE_ENV?.toUpperCase() || 'development'
-      } | PORT: ${process.env.PORT ?? 3000}`,
+        process.env.NODE_ENV || 'development'
+      } | PORT: ${process.env.PORT || 3000}`,
     );
   });
 }

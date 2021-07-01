@@ -11,7 +11,9 @@ yarn-error.log*
 lerna-debug.log*
 
 # Env
-*.env
+.env.local
+.env.docker
+.env
 firebase-credential.json
 
 # OS

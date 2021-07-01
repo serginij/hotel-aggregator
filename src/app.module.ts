@@ -9,10 +9,12 @@ import 'reflect-metadata';
 import { HotelModule } from './libs/hotel/hotel.module';
 import { ReservationModule } from './libs/reservation/reservation.module';
 import { SupportModule } from './libs/support/support.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Injectable()
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
     UserModule,
     TypeOrmModule.forRoot(),
     UtilsModule,
