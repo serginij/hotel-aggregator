@@ -1,12 +1,36 @@
 version: '3.8'
 services:
+  db:
+    image: mongo:4.4.6
+    container_name: db
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=$MONGO_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD
+    volumes:
+      - ./db.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - ./dbdata:/data/db
+    networks:
+      - app-network
+    ports:
+      - 27017:27017
   aggregator:
     build: .
     ports:
       - 3000:3000
       - 80:80
     env_file:
-      - .env.docker
+      - .env
+    environment:
+      - MONGO_HOST=db
     command: npm start
     volumes:
       - ./public:/public
+    depends_on:
+      - db
+    networks:
+      - app-network
+networks:
+  app-network:
+    driver: bridge
