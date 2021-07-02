@@ -1,6 +1,6 @@
 {
   "name": "hotel-aggregator",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "NestJS backed hotel aggregator application",
   "author": "serginij <kotlizkiy@gmail.com>",
   "private": true,
@@ -9,10 +9,9 @@
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "docker-compose up --build",
-    "start:docker": "nest start",
+    "start": "nest start",
+    "start:docker": "docker-compose up --build",
     "start:dev": "nest start --watch",
-    "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
@@ -23,11 +22,14 @@
   },
   "dependencies": {
     "@nestjs/common": "^7.5.1",
+    "@nestjs/config": "^0.6.3",
     "@nestjs/core": "^7.5.1",
     "@nestjs/jwt": "^7.2.0",
     "@nestjs/passport": "^7.1.5",
     "@nestjs/platform-express": "^7.5.1",
+    "@nestjs/platform-socket.io": "^7.6.18",
     "@nestjs/typeorm": "^7.1.5",
+    "@nestjs/websockets": "^7.6.18",
     "@types/express-session": "^1.17.3",
     "@types/uuid": "^8.3.0",
     "bcrypt": "^5.0.1",
@@ -41,6 +43,7 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.6.3",
+    "socket-io": "^1.0.0",
     "typeorm": "^0.2.34",
     "uuid": "^8.3.2"
   },
@@ -77,8 +80,7 @@
     ],
     "preset": "ts-jest",
     "roots": [
-      "<rootDir>/src",
-      "<rootDir>/test"
+      "<rootDir>/src"
     ],
     "moduleDirectories": [
       "node_modules",
@@ -91,8 +93,7 @@
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
     "moduleNameMapper": {
-      "^src/(.*)$": "<rootDir>/src/$1",
-      "^test/(.*)$": "<rootDir>/test/$1"
+      "^src/(.*)$": "<rootDir>/src/$1"
     }
   }
 }

@@ -7,18 +7,19 @@ import {
   TCreateHotelRoomData,
   TUpdateHotelRoomData,
 } from '../interface/hotel-room.interface';
+import { ID } from 'src/common/common.types';
 
 interface IHotelRoomStore {
   createHotelRoom: (
     hotelRoomDto: TCreateHotelRoomData,
   ) => Promise<HotelRoom | undefined>;
 
-  findHotelRoomById: (id: string) => Promise<HotelRoom | undefined>;
+  findHotelRoomById: (id: ID) => Promise<HotelRoom | undefined>;
   findAllHotelRooms: (
     params: SearchHotelRoomParams,
   ) => Promise<HotelRoom[] | undefined>;
   updateHotelRoom: (
-    id: string,
+    id: ID,
     hotelRoomDto: TUpdateHotelRoomData,
   ) => Promise<HotelRoom>;
 }
@@ -34,14 +35,24 @@ export class HotelRoomStore
     return await hotelRoom.save();
   };
 
-  updateHotelRoom = async (id: string, hotelRoomDto: TUpdateHotelRoomData) => {
+  updateHotelRoom = async (id: ID, hotelRoomDto: TUpdateHotelRoomData) => {
     const hotelRoom = await HotelRoom.update(id, hotelRoomDto);
 
     return hotelRoom.raw;
   };
 
-  findHotelRoomById = async (id: string) => {
-    return await HotelRoom.findOne(id);
+  findHotelRoomById = async (id: ID) => {
+    return await HotelRoom.findOne(id, {
+      select: [
+        'id',
+        'title',
+        'description',
+        'images',
+        'hotel.id',
+        'hotel.title',
+        'hotel.description',
+      ] as any,
+    });
   };
 
   findAllHotelRooms = async (params: SearchHotelRoomParams) => {
@@ -52,8 +63,9 @@ export class HotelRoomStore
       take: limit,
       where: {
         title: new RegExp(title),
-        isEnabled,
+        isEnabled: { $eq: isEnabled },
       },
+      select: ['id', 'title', 'images', 'hotel.id', 'hotel.title'] as any,
     });
   };
 }

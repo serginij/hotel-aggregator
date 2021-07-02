@@ -6,9 +6,7 @@ import {
   ObjectID,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany,
 } from 'typeorm';
-import { HotelRoom } from './hotel-room.model';
 
 @Entity()
 export class Hotel extends BaseEntity {
@@ -26,7 +24,4 @@ export class Hotel extends BaseEntity {
 
   @UpdateDateColumn()
   updatedAt: Date;
-
-  @OneToMany(() => HotelRoom, (room) => room.hotel)
-  rooms: HotelRoom[];
 }

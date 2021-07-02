@@ -6,8 +6,7 @@ import { IJwtPayload } from '../interface/auth.interface';
 import { JwtService } from '@nestjs/jwt';
 import { LoginUserDto } from '../dto/auth.dto';
 import { RoleEnum } from 'src/common/common.types';
-
-const JWT_TOKEN_TTL = Number(process.env.JWT_TOKEN_TTL || 3600);
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
@@ -15,8 +14,14 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly bcryptService: BcryptService,
     private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
+  private JWT_TOKEN_TTL = Number(
+    this.configService.get('JWT_TOKEN_TTL') || 3600,
+  );
+
+  // Validates user email & password
   validateUser = async (email: string, pass: string) => {
     const user = await this.userService.findByEmail(email, { fullModel: true });
 
@@ -32,6 +37,7 @@ export class AuthService {
     return null;
   };
 
+  // Register new user
   register = async (userDto: CreateUserDto) => {
     const user = await this.userService.create({
       ...userDto,
@@ -43,6 +49,7 @@ export class AuthService {
     return user;
   };
 
+  // Generates JWT token with user info
   private generateToken = ({ email, name, contactPhone, role }: UserDto) => {
     const user: IJwtPayload = {
       email,
@@ -54,11 +61,12 @@ export class AuthService {
     const token = this.jwtService.sign(user);
 
     return {
-      expiresIn: JWT_TOKEN_TTL,
+      expiresIn: this.JWT_TOKEN_TTL,
       token,
     };
   };
 
+  // Login user
   login = async (loginDto: LoginUserDto) => {
     const { email, password } = loginDto;
     const user = await this.validateUser(email, password);
