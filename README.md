@@ -23,6 +23,11 @@
 >
 > Пример содержания файла конфигурации находится в `.env.local.example`
 
+### Requirments
+
+- `node.js >= 14.16.0`
+- `docker`, `docker-compose` for docker startup _(optional)_
+
 ---
 
 ## Описание проекта
