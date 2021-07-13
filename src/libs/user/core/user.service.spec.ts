@@ -10,6 +10,8 @@ import { UserService } from './user.service';
 import { RoleEnum } from 'src/common/common.types';
 import { UserDto } from '../dto/user.dto';
 import { UtilsModule } from 'src/utils/utils.module';
+import { ConfigModule } from '@nestjs/config';
+import { PassportModule } from '@nestjs/passport';
 
 describe('UserService', () => {
   let userService: UserService;
@@ -37,7 +39,11 @@ describe('UserService', () => {
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
-      imports: [UtilsModule],
+      imports: [
+        UtilsModule,
+        ConfigModule.forRoot({ isGlobal: true }),
+        PassportModule,
+      ],
       providers: [
         UserService,
         {
