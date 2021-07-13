@@ -16,6 +16,7 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
 import { UserService } from 'src/libs/user/core/user.service';
 import { BcryptService } from 'src/utils/bcrypt/bcrypt.service';
 import { LoginUserDto } from '../dto/auth.dto';
+import { ConfigModule } from '@nestjs/config';
 
 describe('AuthService', () => {
   let authService: AuthService;
@@ -69,6 +70,7 @@ describe('AuthService', () => {
             expiresIn: 3600,
           },
         }),
+        ConfigModule.forRoot({ isGlobal: true }),
       ],
       providers: [
         AuthService,
